@@ -1,0 +1,137 @@
+:root {
+  font-family: "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: #1f2937;
+  background: linear-gradient(180deg, #f4efe6 0%, #e7edf7 100%);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.container {
+  min-height: 100vh;
+  margin: 0;
+  padding: 48px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: min(720px, 100%);
+  padding: 32px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 24px 60px rgba(84, 99, 129, 0.18);
+  backdrop-filter: blur(14px);
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  color: #4b5563;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.json-input,
+button {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #d5dbe5;
+  padding: 0.8em 1em;
+  font-size: 1em;
+  font-family: inherit;
+  color: #1f2937;
+  background-color: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.json-input {
+  min-height: 280px;
+  resize: vertical;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.json-input:focus,
+button:hover {
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.12);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+button {
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  font-weight: 600;
+  background: #eff6ff;
+}
+
+.status {
+  min-height: 24px;
+  margin: 0;
+  color: #0f766e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #e5e7eb;
+    background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
+  }
+
+  .card {
+    background: rgba(17, 24, 39, 0.88);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  }
+
+  .subtitle,
+  .status {
+    color: #cbd5e1;
+  }
+
+  .json-input,
+  button {
+    color: #e5e7eb;
+    background-color: rgba(15, 23, 42, 0.92);
+    border-color: #334155;
+  }
+
+  button {
+    background: rgba(30, 41, 59, 0.9);
+  }
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 24px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}
