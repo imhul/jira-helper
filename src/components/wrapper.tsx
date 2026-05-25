@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react"
-// types
-import type { CheckboxProps } from 'antd'
 // components
-import { Tag, Flex, Checkbox, Layout, Button, notification } from 'antd'
-import { JiraTable as Table } from "../components/table"
+import { Tag, Flex, Checkbox, Layout, Segmented, Button, notification } from 'antd'
+import { JiraTable as Table } from "./table"
+import { JiraGrid as Grid } from "./grid"
 import {
     CloudUploadOutlined,
     CloudDownloadOutlined,
     SyncOutlined,
+    AppstoreOutlined,
+    BarsOutlined,
 } from '@ant-design/icons'
 // utils + config
 import { readJson, saveJson, notify, getErrorText } from "../utils"
@@ -20,12 +21,13 @@ const Wrapper: React.FC = () => {
     const [jsonText, setJsonText] = useState('{\n  "jiraUrl": "https://your-domain.atlassian.net",\n  "projectKey": "HELP"\n}')
     const [status, setStatus] = useState('absent')
     const [isAutosave, setIsAutosave] = useState(false)
+    const [isList, setIsList] = useState(false)
 
     const getStatusData = () => {
         return status.length ? statuses[status] : { status: 'default', name: '', icon: null }
     }
 
-    async function save() {
+    const save = async () => {
         setStatus('saving')
         try {
             const parsedJson = JSON.parse(jsonText)
@@ -38,7 +40,7 @@ const Wrapper: React.FC = () => {
         }
     }
 
-    async function read() {
+    const read = async () => {
         setStatus('reading')
         try {
             const savedJson = await readJson()
@@ -47,7 +49,7 @@ const Wrapper: React.FC = () => {
             // notify('success', 'Success!', 'Data is successfully loaded!', api)
         } catch (error) {
             setStatus('readingError')
-            notify('error', "Error: JSON is not loaded!", getErrorText(error), api)
+            notify('error', "Error: JSON is not readed!", getErrorText(error), api)
         }
     }
 
@@ -78,13 +80,23 @@ const Wrapper: React.FC = () => {
                         <Checkbox onChange={(e) => setIsAutosave(e.target.checked)}>Autosave</Checkbox>
                     </Flex>
                     <Flex gap="small" justify="flex-end" align="center">
+                        <Segmented
+                            onChange={(value) => setIsList(value === 'List')}
+                            options={[
+                                { value: 'List', icon: <BarsOutlined /> },
+                                { value: 'Grid', icon: <AppstoreOutlined /> },
+                            ]}
+                        />
                         <Tag color={getStatusData().status} icon={getStatusData().icon} variant="solid">
                             {`JSON ${getStatusData().name}`}
                         </Tag>
                     </Flex>
                 </Header>
                 <Content style={contentStyle}>
-                    <Table />
+                    {isList
+                        ? <Table setDirty={setStatus} />
+                        : <Grid setDirty={setStatus} />
+                    }
                     {/* <textarea
                         id="json-input"
                         className="json-input"

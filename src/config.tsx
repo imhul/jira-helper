@@ -1,51 +1,52 @@
 import { CSSProperties } from 'react';
 import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  SyncOutlined,
+    CheckCircleOutlined,
+    CloseCircleOutlined,
+    SyncOutlined,
+    EditOutlined,
 } from '@ant-design/icons';
 
 export const minute = 60 * 1000
 
 export const headerStyle: CSSProperties = {
     width: '100%',
-  textAlign: 'center',
-  color: '#fff',
-  height: 64,
-  paddingInline: 48,
-  lineHeight: '64px',
-  backgroundColor: '#4096ff',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-};
+    textAlign: 'center',
+    color: '#fff',
+    height: 64,
+    paddingInline: 48,
+    lineHeight: '64px',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+}
 
 export const contentStyle: CSSProperties = {
-  textAlign: 'center',
-  minHeight: 120,
-  lineHeight: '120px',
-  color: '#fff',
-  backgroundColor: '#0958d9',
-};
+    textAlign: 'center',
+    minHeight: 120,
+    lineHeight: '120px',
+    color: '#fff',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+}
 
 export const siderStyle: CSSProperties = {
-  textAlign: 'center',
-  lineHeight: '120px',
-  color: '#fff',
-  backgroundColor: '#1677ff',
-};
+    textAlign: 'center',
+    lineHeight: '120px',
+    color: '#fff',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+}
 
 export const footerStyle: CSSProperties = {
-  textAlign: 'center',
-  color: '#fff',
-  backgroundColor: '#4096ff',
-};
+    textAlign: 'center',
+    color: '#fff',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+}
 
 export const layoutStyle: CSSProperties = {
-  borderRadius: 8,
-  overflow: 'hidden',
-  width: '100%',
-};
+    borderRadius: 0,
+    overflow: 'hidden',
+    width: '100%',
+}
 
 export enum ticketStatuses {
     progress = "In Progress",
@@ -62,6 +63,7 @@ export interface StatusData {
 
 export const statuses: Record<string, StatusData> = {
     absent: { status: 'default', name: '', icon: null },
+    dirty: { status: 'processing', name: 'edited', icon: <EditOutlined /> },
     saving: { status: 'processing', name: 'saving', icon: <SyncOutlined spin /> },
     saved: { status: 'success', name: 'saved', icon: <CheckCircleOutlined /> },
     savingError: { status: 'error', name: 'saving error', icon: <CloseCircleOutlined /> },

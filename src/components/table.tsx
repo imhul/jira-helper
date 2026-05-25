@@ -9,7 +9,11 @@ interface DataType {
     tags: string[];
 }
 
-export const JiraTable: React.FC = () => {
+interface JiraTableProps {
+    setDirty: (status: string) => void;
+}
+
+export const JiraTable: React.FC<JiraTableProps> = ({ setDirty }) => {
     const columns: TableProps<DataType>['columns'] = [
         {
             title: 'Name',
@@ -82,6 +86,10 @@ export const JiraTable: React.FC = () => {
             tags: ['cool', 'teacher'],
         },
     ]
+
+    const edit = () => {
+        setDirty('dirty')
+    }
 
     return (
         <Table<DataType> columns={columns} dataSource={data} />
