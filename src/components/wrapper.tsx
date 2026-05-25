@@ -1,22 +1,25 @@
 import { useState, useEffect } from "react"
+// types
+import type { CheckboxProps } from 'antd'
 // components
-import { Tag, Flex, Layout, Button, notification } from 'antd';
+import { Tag, Flex, Checkbox, Layout, Button, notification } from 'antd'
 import { JiraTable as Table } from "../components/table"
 import {
     CloudUploadOutlined,
     CloudDownloadOutlined,
     SyncOutlined,
-} from '@ant-design/icons';
+} from '@ant-design/icons'
 // utils + config
 import { readJson, saveJson, notify, getErrorText } from "../utils"
-import { statuses, layoutStyle, headerStyle, contentStyle } from "../config"
+import { statuses, layoutStyle, headerStyle, contentStyle, minute } from "../config"
 
 const { Header, Content } = Layout
 
 const Wrapper: React.FC = () => {
     const [api, contextHolder] = notification.useNotification()
     const [jsonText, setJsonText] = useState('{\n  "jiraUrl": "https://your-domain.atlassian.net",\n  "projectKey": "HELP"\n}')
-    const [status, setStatus] = useState('')
+    const [status, setStatus] = useState('absent')
+    const [isAutosave, setIsAutosave] = useState(false)
 
     const getStatusData = () => {
         return status.length ? statuses[status] : { status: 'default', name: '', icon: null }
@@ -56,26 +59,32 @@ const Wrapper: React.FC = () => {
         read()
     }, [])
 
+    useEffect(() => {
+        if (isAutosave) {
+            const timeout = setInterval(() => save(), minute)
+            return () => clearInterval(timeout)
+        }
+    }, [isAutosave])
+
     return (
         <main className="container">
             {contextHolder}
             <Layout style={layoutStyle}>
                 <Header style={headerStyle}>
-                    <Flex gap={8} justify="space-between" align="center">
+                    <Flex gap="small" justify="space-between" align="center">
                         <Button type="primary" shape="circle" onClick={reload} icon={<SyncOutlined />} />
                         <Button type="primary" shape="circle" onClick={save} icon={<CloudUploadOutlined />} />
                         <Button type="primary" shape="circle" onClick={read} icon={<CloudDownloadOutlined />} />
+                        <Checkbox onChange={(e) => setIsAutosave(e.target.checked)}>Autosave</Checkbox>
                     </Flex>
-                    <Flex gap={8} justify="flex-end" align="center">
+                    <Flex gap="small" justify="flex-end" align="center">
                         <Tag color={getStatusData().status} icon={getStatusData().icon} variant="solid">
                             {`JSON ${getStatusData().name}`}
                         </Tag>
                     </Flex>
                 </Header>
                 <Content style={contentStyle}>
-                    <section className="card">
-                        <Table />
-                    </section>
+                    <Table />
                     {/* <textarea
                         id="json-input"
                         className="json-input"

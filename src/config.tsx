@@ -5,6 +5,7 @@ import {
   SyncOutlined,
 } from '@ant-design/icons';
 
+export const minute = 60 * 1000
 
 export const headerStyle: CSSProperties = {
     width: '100%',
@@ -60,6 +61,7 @@ export interface StatusData {
 }
 
 export const statuses: Record<string, StatusData> = {
+    absent: { status: 'default', name: '', icon: null },
     saving: { status: 'processing', name: 'saving', icon: <SyncOutlined spin /> },
     saved: { status: 'success', name: 'saved', icon: <CheckCircleOutlined /> },
     savingError: { status: 'error', name: 'saving error', icon: <CloseCircleOutlined /> },
