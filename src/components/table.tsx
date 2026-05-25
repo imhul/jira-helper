@@ -1,97 +1,26 @@
-import { Flex, Space, Table, Tag } from 'antd'
-import type { TableProps } from 'antd'
-
-interface DataType {
-    key: string;
-    name: string;
-    age: number;
-    address: string;
-    tags: string[];
-}
+import { memo } from 'react'
+// types
+import type { FC } from 'react'
+// components
+import { Table } from 'antd'
+// utils + config
+import type { JsonData } from '../config'
+import { defaultJson, columns } from '../config'
 
 interface JiraTableProps {
     setDirty: (status: string) => void;
+    data: JsonData;
 }
 
-export const JiraTable: React.FC<JiraTableProps> = ({ setDirty }) => {
-    const columns: TableProps<DataType>['columns'] = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-            render: (text) => <a>{text}</a>,
-        },
-        {
-            title: 'Age',
-            dataIndex: 'age',
-            key: 'age',
-        },
-        {
-            title: 'Address',
-            dataIndex: 'address',
-            key: 'address',
-        },
-        {
-            title: 'Tags',
-            key: 'tags',
-            dataIndex: 'tags',
-            render: (_, { tags }) => (
-                <Flex gap="small" align="center" wrap>
-                    {tags.map((tag) => {
-                        let color = tag.length > 5 ? 'geekblue' : 'green';
-                        if (tag === 'kawaii') {
-                            color = 'volcano';
-                        }
-                        return (
-                            <Tag color={color} key={tag}>
-                                {tag.toUpperCase()}
-                            </Tag>
-                        );
-                    })}
-                </Flex>
-            ),
-        },
-        {
-            title: 'Action',
-            key: 'action',
-            render: (_, record) => (
-                <Space size="medium">
-                    <a>Invite {record.name}</a>
-                    <a>Delete</a>
-                </Space>
-            ),
-        },
-    ]
-
-    const data: DataType[] = [
-        {
-            key: '1',
-            name: 'John Brown',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-            tags: ['nice', 'developer'],
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 1 Lake Park',
-            tags: ['kawaii'],
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            age: 32,
-            address: 'Sydney No. 1 Lake Park',
-            tags: ['cool', 'teacher'],
-        },
-    ]
-
-    const edit = () => {
-        setDirty('dirty')
-    }
+export const JiraTable: FC<JiraTableProps> = memo(({ setDirty, data = defaultJson }) => {
+    void setDirty
+    console.info('Rendering JiraTable with data: ', data)
 
     return (
-        <Table<DataType> columns={columns} dataSource={data} />
+        <Table<JsonData['tickets'][number]>
+            columns={columns}
+            dataSource={data.tickets}
+            rowKey={(record) => record.ticketId}
+        />
     )
-}
+})

@@ -1,10 +1,16 @@
-
+import { memo } from 'react'
+import type { FC } from 'react'
+// utils + config
+import { getFormattedData } from "../utils"
+import { defaultJson } from '../config'
 
 interface JiraGridProps {
     setDirty: (status: string) => void;
+    data: typeof defaultJson;
 }
 
-export const JiraGrid: React.FC<JiraGridProps> = ({ setDirty }) => {
+export const JiraGrid: FC<JiraGridProps> = memo(({ setDirty, data }) => {
+    console.info('Rendering JiraGrid with data:', data)
     return (
         <div className="grid-container" onClick={() => setDirty('dirty')}>
             <div className="grid-item">1</div>
@@ -15,4 +21,4 @@ export const JiraGrid: React.FC<JiraGridProps> = ({ setDirty }) => {
             <div className="grid-item">6</div>
         </div>
     )
-}
+})

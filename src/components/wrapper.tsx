@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { memo, useState, useEffect } from "react"
 // components
 import { Tag, Flex, Checkbox, Layout, Segmented, Button, notification } from 'antd'
 import { JiraTable as Table } from "./table"
@@ -11,17 +11,17 @@ import {
     BarsOutlined,
 } from '@ant-design/icons'
 // utils + config
-import { readJson, saveJson, notify, getErrorText } from "../utils"
-import { statuses, layoutStyle, headerStyle, contentStyle, minute } from "../config"
+import { readJson, saveJson, notify, getErrorText, setAppSize } from "../utils"
+import { statuses, layoutStyle, headerStyle, contentStyle, defaultJson, minute } from "../config"
 
 const { Header, Content } = Layout
 
 const Wrapper: React.FC = () => {
     const [api, contextHolder] = notification.useNotification()
-    const [jsonText, setJsonText] = useState('{\n  "jiraUrl": "https://your-domain.atlassian.net",\n  "projectKey": "HELP"\n}')
+    const [jsonObj, setJsonObj] = useState(defaultJson)
     const [status, setStatus] = useState('absent')
     const [isAutosave, setIsAutosave] = useState(false)
-    const [isList, setIsList] = useState(false)
+    const [isList, setIsList] = useState(true)
 
     const getStatusData = () => {
         return status.length ? statuses[status] : { status: 'default', name: '', icon: null }
@@ -30,8 +30,7 @@ const Wrapper: React.FC = () => {
     const save = async () => {
         setStatus('saving')
         try {
-            const parsedJson = JSON.parse(jsonText)
-            await saveJson(parsedJson)
+            await saveJson(jsonObj)
             setStatus('saved')
             // notify('success', 'Success!', 'Data is successfully saved!', api)
         } catch (error) {
@@ -44,7 +43,8 @@ const Wrapper: React.FC = () => {
         setStatus('reading')
         try {
             const savedJson = await readJson()
-            setJsonText(JSON.stringify(savedJson, null, 2))
+            console.info('Readed JSON:', savedJson)
+            setJsonObj(savedJson as typeof defaultJson)
             setStatus('readed')
             // notify('success', 'Success!', 'Data is successfully loaded!', api)
         } catch (error) {
@@ -59,6 +59,7 @@ const Wrapper: React.FC = () => {
 
     useEffect(() => {
         read()
+        setAppSize()
     }, [])
 
     useEffect(() => {
@@ -94,8 +95,8 @@ const Wrapper: React.FC = () => {
                 </Header>
                 <Content style={contentStyle}>
                     {isList
-                        ? <Table setDirty={setStatus} />
-                        : <Grid setDirty={setStatus} />
+                        ? <Table setDirty={setStatus} data={jsonObj} />
+                        : <Grid setDirty={setStatus} data={jsonObj} />
                     }
                     {/* <textarea
                         id="json-input"
@@ -109,4 +110,4 @@ const Wrapper: React.FC = () => {
     )
 }
 
-export default Wrapper
+export default memo(Wrapper)

@@ -1,10 +1,13 @@
-import { CSSProperties } from 'react';
+import { CSSProperties } from 'react'
+import { Button, Flex, Tag } from 'antd'
+import type { TableProps } from 'antd'
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
+    DeleteOutlined,
     SyncOutlined,
     EditOutlined,
-} from '@ant-design/icons';
+} from '@ant-design/icons'
 
 export const minute = 60 * 1000
 
@@ -71,3 +74,131 @@ export const statuses: Record<string, StatusData> = {
     readed: { status: 'success', name: 'readed', icon: <CheckCircleOutlined /> },
     readingError: { status: 'error', name: 'reading error', icon: <CloseCircleOutlined /> },
 }
+
+export interface Ticket {
+    order: number;
+    ticketId: string;
+    ticketTitle: string;
+    branchName: string;
+    pushCommand: string;
+    commitMessage: string;
+    ticketStatus: TicketStatus;
+    ticketLink: string;
+    gitLink: string;
+    prLink: string;
+    gameName: string;
+    additionalInfo: string;
+}
+
+export interface JsonData {
+    tickets: Ticket[];
+}
+
+export type TicketStatus = 'progress' | 'done' | 'review' | 'qa' | 'pending deploy'
+
+export const defaultJson: JsonData = {
+    tickets: [
+        {
+            order: 1,
+            ticketId: 'ticketId',
+            ticketTitle: 'ticketTitle',
+            branchName: 'branchName',
+            pushCommand: 'pushCommand',
+            commitMessage: 'commitMessage',
+            ticketStatus: 'progress',
+            ticketLink: 'ticketLink',
+            gitLink: 'gitLink',
+            prLink: 'prLink',
+            gameName: 'gameName',
+            additionalInfo: 'additionalInfo',
+        }
+    ]
+}
+
+export const columns: TableProps<JsonData['tickets'][number]>['columns'] = [
+    {
+        title: '#',
+        dataIndex: 'order',
+        key: 'order',
+    },
+    {
+        title: 'ID',
+        dataIndex: 'ticketId',
+        key: 'ticketId',
+    },
+    {
+        title: 'Title',
+        dataIndex: 'ticketTitle',
+        key: 'ticketTitle',
+    },
+    {
+        title: 'Branch',
+        dataIndex: 'branchName',
+        key: 'branchName',
+    },
+    {
+        title: 'Push',
+        dataIndex: 'pushCommand',
+        key: 'pushCommand',
+    },
+    {
+        title: 'Commit',
+        dataIndex: 'commitMessage',
+        key: 'commitMessage',
+    },
+    {
+        title: 'Status',
+        dataIndex: 'ticketStatus',
+        key: 'ticketStatus',
+        render: (status: TicketStatus) => {
+            const statusData = statuses[status] || statuses['absent']
+            return (
+                <Tag icon={statusData.icon} color={statusData.status}>
+                    {statusData.name}
+                </Tag>
+            )
+        }
+    },
+    {
+        title: 'Ticket',
+        dataIndex: 'ticketLink',
+        key: 'ticketLink',
+    },
+    {
+        title: 'Git',
+        dataIndex: 'gitLink',
+        key: 'gitLink',
+    },
+    {
+        title: 'PR',
+        dataIndex: 'prLink',
+        key: 'prLink',
+    },
+    {
+        title: 'Game',
+        dataIndex: 'gameName',
+        key: 'gameName',
+    },
+    {
+        title: 'Additional Info',
+        dataIndex: 'additionalInfo',
+        key: 'additionalInfo',
+    },
+    {
+        title: 'Actions',
+        key: 'actions',
+        render: (value, record, index) => {
+            console.info('Rendering actions for record:', {
+                value,
+                record,
+                index,
+            })
+            return (
+            <Flex gap="small">
+                <Button type="text" icon={<EditOutlined />} />
+                <Button type="text" icon={<DeleteOutlined />} />
+            </Flex>
+        )
+        },
+    }
+]
