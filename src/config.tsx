@@ -9,6 +9,7 @@ import {
     EditOutlined,
 } from '@ant-design/icons'
 
+export const colorPrimary = "#9ccc65"
 export const minute = 60 * 1000
 
 export const headerStyle: CSSProperties = {
@@ -65,14 +66,14 @@ export interface StatusData {
 }
 
 export const statuses: Record<string, StatusData> = {
-    absent: { status: 'default', name: '', icon: null },
-    dirty: { status: 'processing', name: 'edited', icon: <EditOutlined /> },
-    saving: { status: 'processing', name: 'saving', icon: <SyncOutlined spin /> },
-    saved: { status: 'success', name: 'saved', icon: <CheckCircleOutlined /> },
-    savingError: { status: 'error', name: 'saving error', icon: <CloseCircleOutlined /> },
-    reading: { status: 'processing', name: 'reading', icon: <SyncOutlined spin /> },
-    readed: { status: 'success', name: 'readed', icon: <CheckCircleOutlined /> },
-    readingError: { status: 'error', name: 'reading error', icon: <CloseCircleOutlined /> },
+    absent: { status: 'default', name: '', icon: <SyncOutlined size={24} /> },
+    dirty: { status: 'processing', name: 'edited', icon: <EditOutlined size={24} /> },
+    saving: { status: 'processing', name: 'saving', icon: <SyncOutlined size={24} spin /> },
+    saved: { status: 'success', name: 'saved', icon: <CheckCircleOutlined size={24} /> },
+    savingError: { status: 'error', name: 'saving error', icon: <CloseCircleOutlined size={24} /> },
+    reading: { status: 'processing', name: 'reading', icon: <SyncOutlined size={24} spin /> },
+    readed: { status: 'success', name: 'readed', icon: <CheckCircleOutlined size={24} /> },
+    readingError: { status: 'error', name: 'reading error', icon: <CloseCircleOutlined size={24} /> },
 }
 
 export interface Ticket {
@@ -198,7 +199,6 @@ export const columns: TableProps<JsonData['tickets'][number]>['columns'] = [
                 <Button type="text" icon={<EditOutlined />} />
                 <Button type="text" icon={<DeleteOutlined />} />
             </Flex>
-        )
-        },
+        )},
     }
 ]
