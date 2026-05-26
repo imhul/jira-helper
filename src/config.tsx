@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react'
-import { Button, Flex, Tag } from 'antd'
-import type { TableProps } from 'antd'
+// components
+import { Button, Popconfirm, Flex, Tag } from 'antd'
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
@@ -8,6 +8,8 @@ import {
     SyncOutlined,
     EditOutlined,
 } from '@ant-design/icons'
+// types
+import type { TableProps } from 'antd'
 
 export const colorPrimary = "#9ccc65"
 export const colorDanger = "#ff3d00"
@@ -61,13 +63,15 @@ export enum ticketStatuses {
     qa = "QA",
 }
 
+export const statusOptions = Object.entries(ticketStatuses).map(([value, label]) => ({ value, label }))
+
 export interface StatusData {
     status: 'processing' | 'success' | 'error' | 'default',
     name: string,
     icon: React.ReactNode,
 }
 
-export const statuses: Record<string, StatusData> = {
+export const dataStatuses: Record<string, StatusData> = {
     absent: { status: 'default', name: '', icon: <SyncOutlined size={24} /> },
     dirty: { status: 'processing', name: 'edited', icon: <EditOutlined size={24} /> },
     saving: { status: 'processing', name: 'saving', icon: <SyncOutlined size={24} spin /> },
@@ -99,10 +103,17 @@ export interface JsonData {
 
 export type TicketStatus = 'progress' | 'done' | 'review' | 'qa' | 'pending deploy'
 
-interface TicketColumnActions {
+export interface TicketColumnActions {
     onEdit: (ticket: Ticket) => void;
     onDelete: (ticket: Ticket) => void;
 }
+
+export const standartRules = [{
+    min: 3,
+    max: 250,
+    required: false,
+    message: 'This string too short or too long!',
+}]
 
 export const defaultJson: JsonData = {
     tickets: [
@@ -123,7 +134,60 @@ export const defaultJson: JsonData = {
     ]
 }
 
-type CreatedColumns = TableProps<JsonData['tickets'][number]>['columns']
+export const formItems = [
+    {
+        label: 'Ticket Title',
+        name: 'ticketTitle',
+        rules: standartRules,
+    },
+    {
+        label: 'Branch',
+        name: 'branchName',
+        rules: standartRules,
+    },
+    {
+        label: 'Push Command',
+        name: 'pushCommand',
+        rules: standartRules,
+    },
+    {
+        label: 'Commit',
+        name: 'commitMessage',
+        rules: standartRules,
+    },
+    {
+        label: 'Status',
+        name: 'ticketStatus',
+        rules: [],
+    },
+    {
+        label: 'Ticket Link',
+        name: 'ticketLink',
+        rules: standartRules,
+    },
+    {
+        label: 'Repository',
+        name: 'gitLink',
+        rules: standartRules,
+    },
+    {
+        label: 'PR',
+        name: 'prLink',
+        rules: standartRules,
+    },
+    {
+        label: 'Game',
+        name: 'gameName',
+        rules: standartRules,
+    },
+    {
+        label: 'Notes',
+        name: 'additionalInfo',
+        rules: standartRules,
+    }
+]
+
+export type CreatedColumns = TableProps<JsonData['tickets'][number]>['columns']
 
 export const createColumns = ({ onEdit, onDelete }: TicketColumnActions): CreatedColumns => [
     {
@@ -161,7 +225,7 @@ export const createColumns = ({ onEdit, onDelete }: TicketColumnActions): Create
         dataIndex: 'ticketStatus',
         key: 'ticketStatus',
         render: (status: TicketStatus) => {
-            const statusData = statuses[status] || statuses['absent']
+            const statusData = dataStatuses[status] || dataStatuses['absent']
             return (
                 <Tag icon={statusData.icon} color={statusData.status}>
                     {statusData.name}
@@ -204,10 +268,19 @@ export const createColumns = ({ onEdit, onDelete }: TicketColumnActions): Create
                 index,
             })
             return (
-            <Flex gap="small">
-                <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(record)} />
-                <Button type="text" icon={<DeleteOutlined />} onClick={() => onDelete(record)} />
-            </Flex>
-        )},
+                <Flex gap="small">
+                    <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(record)} />
+                    <Popconfirm
+                        title="Delete the ticket"
+                        description="Are you sure to delete this ticket?"
+                        onConfirm={() => onDelete(record)}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button type="text" icon={<DeleteOutlined />} />
+                    </Popconfirm>
+                </Flex>
+            )
+        },
     }
 ]

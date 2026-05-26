@@ -23,6 +23,6 @@ export function notify(
         role: 'status',
         className: "notify",
         key: crypto.randomUUID(),
-        icon: icon,
+        icon,
     })
 }

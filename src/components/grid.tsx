@@ -1,5 +1,9 @@
 import { memo } from 'react'
+// types
 import type { FC } from 'react'
+import type { JsonData, Ticket } from '../config'
+// components
+
 // utils + config
 import { getFormattedData } from "../utils"
 import { defaultJson } from '../config'
@@ -7,6 +11,8 @@ import { defaultJson } from '../config'
 interface JiraGridProps {
     setDirty: (status: string) => void;
     data: typeof defaultJson;
+    onEdit?: (ticket: Ticket) => void;
+    onDelete?: (ticket: Ticket) => void;
 }
 
 export const JiraGrid: FC<JiraGridProps> = memo(({ setDirty, data }) => {

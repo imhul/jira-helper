@@ -10,21 +10,21 @@ import { createColumns, defaultJson } from '../config'
 interface JiraTableProps {
     setDirty: (status: string) => void;
     data: JsonData;
-    onEditTicket?: (ticket: Ticket) => void;
-    onDeleteTicket?: (ticket: Ticket) => void;
+    onEdit?: (ticket: Ticket) => void;
+    onDelete?: (ticket: Ticket) => void;
 }
 
-export const JiraTable: FC<JiraTableProps> = memo(({ setDirty, data = defaultJson, onEditTicket, onDeleteTicket }) => {
+export const JiraTable: FC<JiraTableProps> = memo(({ setDirty, data = defaultJson, onEdit, onDelete }) => {
     console.info('Rendering JiraTable with data: ', data)
 
     const editTicket = (ticket: Ticket) => {
         setDirty('dirty')
-        onEditTicket?.(ticket)
+        onEdit?.(ticket)
     }
 
     const deleteTicket = (ticket: Ticket) => {
         setDirty('dirty')
-        onDeleteTicket?.(ticket)
+        onDelete?.(ticket)
     }
 
     const columns = createColumns({

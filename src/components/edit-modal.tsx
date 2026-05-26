@@ -1,0 +1,124 @@
+// components
+import { Modal, Flex, Form, Input, Select } from 'antd'
+// types
+import type { FC } from 'react'
+import type { Ticket } from '../config'
+// utils + config
+import { formItems, statusOptions, ticketStatuses } from '../config'
+
+interface EditModalProps {
+    isModalOpen: boolean;
+    setIsModalOpen: (value: boolean) => void;
+    edit: (ticket: Ticket) => void;
+    ticket: Ticket;
+}
+
+interface FormValues {
+    additionalInfo: string | undefined;
+    branchName: string | undefined;
+    commitMessage: string | undefined;
+    gameName: string | undefined;
+    gitLink: string | undefined;
+    prLink: string | undefined;
+    pushCommand: string | undefined;
+    ticketLink: string | undefined;
+    ticketStatus: keyof typeof ticketStatuses | undefined;
+    ticketTitle: string | undefined;
+}
+
+const FormItem = Form.Item
+const midpoint = Math.ceil(formItems.length / 2)
+const leftColumnItems = formItems.slice(0, midpoint)
+const rightColumnItems = formItems.slice(midpoint)
+
+export const EditModal: FC<EditModalProps> = ({
+    edit,
+    ticket,
+    isModalOpen,
+    setIsModalOpen,
+}) => {
+    const [form] = Form.useForm()
+
+    const ok = (formValues: FormValues) => {
+        console.info('Form values on submit: ', formValues)
+        if (Object.values(formValues).some(value => value !== undefined)) {
+            const definedValues = Object.fromEntries(
+                Object.entries(formValues).filter(([_, value]) => value !== undefined)
+            )
+            console.info('Defined form values: ', definedValues)
+            edit({ ...ticket, ...definedValues })
+        }
+        setIsModalOpen(false)
+    }
+
+    const cancel = () => {
+        setIsModalOpen(false)
+    }
+
+    return (
+        <Modal
+            title={`Edit Ticket: ${ticket.ticketId}`}
+            closable={{ 'aria-label': 'Close' }}
+            open={isModalOpen}
+            onCancel={cancel}
+            okText="Save"
+            cancelText="Cancel"
+            centered
+            destroyOnHidden
+            okButtonProps={{ autoFocus: true, htmlType: 'submit' }}
+            width={{
+                xs: '90%',
+                sm: '80%',
+                md: '70%',
+                lg: '60%',
+                xl: '50%',
+                xxl: '40%',
+            }}
+            modalRender={(dom) => (
+                <Form
+                    layout="horizontal"
+                    form={form}
+                    name="ticket-editor"
+                    initialValues={{ ...ticket }}
+                    clearOnDestroy
+                    onFinish={ok}
+                >
+                    {dom}
+                </Form>
+            )}
+        >
+            <Flex gap="middle" align="start" justify="space-between" wrap>
+                {[leftColumnItems, rightColumnItems].map((columnItems, columnIndex) => (
+                    <Flex
+                        key={columnIndex}
+                        vertical
+                        gap="small"
+                        style={{ flex: 1, minWidth: 280 }}
+                    >
+                        {columnItems.map((item) => (
+                            <FormItem
+                                key={item.name}
+                                name={item.name}
+                                label={item.label}
+                                rules={item.rules}
+                                style={{ marginBottom: 0 }}
+                            >
+                                {item.rules.length > 0
+                                    ? (
+                                        <Input
+                                            type="text"
+                                        />
+                                    )
+                                    : (
+                                        <Select
+                                            options={statusOptions}
+                                        />
+                                    )}
+                            </FormItem>
+                        ))}
+                    </Flex>
+                ))}
+            </Flex>
+        </Modal>
+    )
+}

@@ -3,7 +3,8 @@ import { memo, useState, useEffect } from "react"
 import { Flex, Checkbox, Layout, Segmented, Button, notification } from 'antd'
 import { JiraTable as Table } from "./table"
 import { JiraGrid as Grid } from "./grid"
-import { AddModal as Modal } from "./add-modal"
+import { AddModal } from "./add-modal"
+import { EditModal } from "./edit-modal"
 import { SatusTag as Tag } from "./tag"
 import Counter from "./counter"
 import {
@@ -18,7 +19,7 @@ import {
 import type { Ticket } from '../config'
 // utils + config
 import { readJson, saveJson, notify, getErrorText, setDefaultAppSize, centerAppWindow } from "../utils"
-import { statuses, layoutStyle, headerStyle, contentStyle, defaultJson, minute } from "../config"
+import { dataStatuses, layoutStyle, headerStyle, contentStyle, defaultJson, minute } from "../config"
 
 const { Header, Content } = Layout
 
@@ -28,10 +29,12 @@ const Wrapper: React.FC = () => {
     const [status, setStatus] = useState('absent')
     const [isAutosave, setIsAutosave] = useState(false)
     const [isList, setIsList] = useState(true)
-    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [selectedTicket, setSelectedTicket] = useState<Ticket>(defaultJson.tickets[0])
 
     const getStatusData = () => {
-        return status.length ? statuses[status] : { status: 'default', name: '', icon: null }
+        return status.length ? dataStatuses[status] : { status: 'default', name: '', icon: null }
     }
 
     const save = async () => {
@@ -66,22 +69,35 @@ const Wrapper: React.FC = () => {
 
     const add = (ticket: Ticket) => {
         console.info('Adding ticket: ', ticket)
+        setSelectedTicket(ticket)
         setJsonObj((prev) => ({
             ...prev,
             tickets: [...prev.tickets, ticket],
         }))
-        setIsModalOpen(false)
+        save()
+        setIsAddModalOpen(false)
     }
 
     const onAdd = () => {
-        setIsModalOpen(true)
+        setIsAddModalOpen(true)
     }
 
-    const editTicket = (ticket: Ticket) => {
-        console.info('Editing ticket:', ticket)
+    const edit = (ticket: Ticket) => {
+        console.info('Editing ticket: ', ticket)
+        setSelectedTicket(ticket)
+        setJsonObj((prev) => ({
+            ...prev,
+            tickets: prev.tickets.map((t) => (t.ticketId === ticket.ticketId ? ticket : t)),
+        }))
+        save()
+        setIsEditModalOpen(false)
     }
 
-    const deleteTicket = (ticketToDelete: Ticket) => {
+    const onEdit = () => {
+        setIsEditModalOpen(true)
+    }
+
+    const onDelete = (ticketToDelete: Ticket) => {
         setJsonObj((prev) => ({
             ...prev,
             tickets: prev.tickets.filter((ticket) => ticket.ticketId !== ticketToDelete.ticketId),
@@ -108,7 +124,13 @@ const Wrapper: React.FC = () => {
     return (
         <main className="container">
             {contextHolder}
-            <Modal add={add} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+            <AddModal add={add} isModalOpen={isAddModalOpen} setIsModalOpen={setIsAddModalOpen} />
+            <EditModal
+                edit={edit}
+                isModalOpen={isEditModalOpen}
+                setIsModalOpen={setIsEditModalOpen}
+                ticket={selectedTicket}
+            />
             <Layout style={layoutStyle}>
                 <Header style={headerStyle}>
                     <Flex gap="small" justify="space-between" align="center">
@@ -133,8 +155,8 @@ const Wrapper: React.FC = () => {
                 </Header>
                 <Content style={contentStyle}>
                     {isList
-                        ? <Table setDirty={setStatus} data={jsonObj} onEditTicket={editTicket} onDeleteTicket={deleteTicket} />
-                        : <Grid setDirty={setStatus} data={jsonObj} />
+                        ? <Table setDirty={setStatus} data={jsonObj} onEdit={onEdit} onDelete={onDelete} />
+                        : <Grid setDirty={setStatus} data={jsonObj} onEdit={onEdit} onDelete={onDelete} />
                     }
                     {/* <textarea
                         id="json-input"
