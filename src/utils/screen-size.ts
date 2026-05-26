@@ -27,15 +27,17 @@ export function getDeviceHeight(): number {
 	return getDeviceScreenSize().height
 }
 
-export async function setAppSize(): Promise<void> {
+export async function setDefaultAppSize(): Promise<void> {
 	const { width, height } = getDeviceScreenSize()
-    const halfWidth = width / 2
-    const halfHeight = height / 2
-	const appWidth = (halfWidth < minAppWidth && width < minAppWidth) ? halfWidth : minAppWidth
-	const appHeight = (halfHeight < minAppHeight && height < minAppHeight) ? halfHeight : minAppHeight
-    console.info('Setting app size to: ', { appWidth, appHeight })
-
+    
 	await getCurrentWindow().setSize(
-		new LogicalSize(appWidth, appHeight),
+		new LogicalSize(
+            Math.floor(width / 100 * 80),
+            Math.floor(height / 100 * 80)
+        ),
 	)
+}
+
+export async function centerAppWindow(): Promise<void> {
+    await getCurrentWindow().center()
 }

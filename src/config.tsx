@@ -10,6 +10,8 @@ import {
 } from '@ant-design/icons'
 
 export const colorPrimary = "#9ccc65"
+export const colorDanger = "#ff3d00"
+export const transparent = 'rgba(0, 0, 0, 0)'
 export const minute = 60 * 1000
 
 export const headerStyle: CSSProperties = {
@@ -19,7 +21,7 @@ export const headerStyle: CSSProperties = {
     height: 64,
     paddingInline: 48,
     lineHeight: '64px',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: transparent,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -30,20 +32,20 @@ export const contentStyle: CSSProperties = {
     minHeight: 120,
     lineHeight: '120px',
     color: '#fff',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: transparent,
 }
 
 export const siderStyle: CSSProperties = {
     textAlign: 'center',
     lineHeight: '120px',
     color: '#fff',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: transparent,
 }
 
 export const footerStyle: CSSProperties = {
     textAlign: 'center',
     color: '#fff',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: transparent,
 }
 
 export const layoutStyle: CSSProperties = {
@@ -97,6 +99,11 @@ export interface JsonData {
 
 export type TicketStatus = 'progress' | 'done' | 'review' | 'qa' | 'pending deploy'
 
+interface TicketColumnActions {
+    onEdit: (ticket: Ticket) => void;
+    onDelete: (ticket: Ticket) => void;
+}
+
 export const defaultJson: JsonData = {
     tickets: [
         {
@@ -116,7 +123,9 @@ export const defaultJson: JsonData = {
     ]
 }
 
-export const columns: TableProps<JsonData['tickets'][number]>['columns'] = [
+type CreatedColumns = TableProps<JsonData['tickets'][number]>['columns']
+
+export const createColumns = ({ onEdit, onDelete }: TicketColumnActions): CreatedColumns => [
     {
         title: '#',
         dataIndex: 'order',
@@ -196,8 +205,8 @@ export const columns: TableProps<JsonData['tickets'][number]>['columns'] = [
             })
             return (
             <Flex gap="small">
-                <Button type="text" icon={<EditOutlined />} />
-                <Button type="text" icon={<DeleteOutlined />} />
+                <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(record)} />
+                <Button type="text" icon={<DeleteOutlined />} onClick={() => onDelete(record)} />
             </Flex>
         )},
     }

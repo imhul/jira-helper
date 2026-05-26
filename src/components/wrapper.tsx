@@ -5,6 +5,7 @@ import { JiraTable as Table } from "./table"
 import { JiraGrid as Grid } from "./grid"
 import { AddModal as Modal } from "./add-modal"
 import { SatusTag as Tag } from "./tag"
+import Counter from "./counter"
 import {
     SaveOutlined,
     CloudDownloadOutlined,
@@ -16,7 +17,7 @@ import {
 // types
 import type { Ticket } from '../config'
 // utils + config
-import { readJson, saveJson, notify, getErrorText, setAppSize } from "../utils"
+import { readJson, saveJson, notify, getErrorText, setDefaultAppSize, centerAppWindow } from "../utils"
 import { statuses, layoutStyle, headerStyle, contentStyle, defaultJson, minute } from "../config"
 
 const { Header, Content } = Layout
@@ -76,9 +77,25 @@ const Wrapper: React.FC = () => {
         setIsModalOpen(true)
     }
 
+    const editTicket = (ticket: Ticket) => {
+        console.info('Editing ticket:', ticket)
+    }
+
+    const deleteTicket = (ticketToDelete: Ticket) => {
+        setJsonObj((prev) => ({
+            ...prev,
+            tickets: prev.tickets.filter((ticket) => ticket.ticketId !== ticketToDelete.ticketId),
+        }))
+    }
+
     useEffect(() => {
-        read()
-        setAppSize()
+        async function init() {
+            await setDefaultAppSize()
+            await centerAppWindow()
+            await read()
+        }
+
+        init()
     }, [])
 
     useEffect(() => {
@@ -110,12 +127,13 @@ const Wrapper: React.FC = () => {
                                 { value: 'Grid', icon: <AppstoreOutlined /> },
                             ]}
                         />
+                        <Counter num={jsonObj.tickets.length} />
                         <Tag data={getStatusData()} />
                     </Flex>
                 </Header>
                 <Content style={contentStyle}>
                     {isList
-                        ? <Table setDirty={setStatus} data={jsonObj} />
+                        ? <Table setDirty={setStatus} data={jsonObj} onEditTicket={editTicket} onDeleteTicket={deleteTicket} />
                         : <Grid setDirty={setStatus} data={jsonObj} />
                     }
                     {/* <textarea
