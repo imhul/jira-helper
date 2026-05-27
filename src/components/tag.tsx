@@ -1,20 +1,15 @@
 // components
 import { Tag } from 'antd'
 // types
-import type { TagProps } from 'antd'
+import type { TagProps, SatusTagProps } from '../types'
 // utils + config
 import { colorPrimary, colorDanger } from '../config'
 
-interface SatusTagProps {
-    data: {
-        status: string;
-        name: string;
-        icon: React.ReactNode;
-    }
-}
 
-export const SatusTag = ({ data }: SatusTagProps) => {
+
+export const SatusTag = ({ data, lastTimeSaved }: SatusTagProps) => {
     const { status, name, icon } = data
+    console.info(data)
 
     const styles: TagProps['styles'] = {
         root: {
@@ -25,9 +20,13 @@ export const SatusTag = ({ data }: SatusTagProps) => {
         }
     }
 
+    const text = (name === 'saved' && status === 'success')
+        ? `JSON ${name} at: ${new Date(lastTimeSaved).toLocaleString()}`
+        : `JSON ${name}`
+
     return (
         <Tag color={status} icon={icon} variant="solid" styles={styles}>
-            {`JSON ${name}`}
+            {text}
         </Tag>
     )
 }

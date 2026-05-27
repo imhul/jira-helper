@@ -1,6 +1,6 @@
 import { memo, useState, useEffect } from "react"
 // components
-import { Flex, Checkbox, Layout, Segmented, Button, notification } from 'antd'
+import { Flex, Checkbox, Layout, Segmented, Button, notification, Card } from 'antd'
 import { JiraTable as Table } from "./table/table"
 import GitCloneCommand from "./git-clone-command"
 import { JiraGrid as Grid } from "./grid"
@@ -57,10 +57,15 @@ const Wrapper: FC = () => {
             : { status: 'default', name: '', icon: null }
     }
 
-    const saveData = async () => {
+    const saveData = async (dataToSave = jsonObj) => {
         setStatus('saving')
+        const nextData = {
+            ...dataToSave,
+            lastTimeSaved: Date.now(),
+        }
         try {
-            await saveJson(jsonObj)
+            setJsonObj(nextData)
+            await saveJson(nextData)
             setStatus('saved')
             // notify('success', 'Success!', 'Data is successfully saved!', api)
         } catch (error) {
@@ -87,20 +92,24 @@ const Wrapper: FC = () => {
     }
 
     const add = (ticket: Ticket) => {
-        setJsonObj((prev) => ({
-            ...prev,
-            tickets: [...prev.tickets, ticket],
-        }))
-        saveData()
+        const nextData = {
+            ...jsonObj,
+            tickets: [...jsonObj.tickets, ticket],
+        }
+
+        setJsonObj(nextData)
+        saveData(nextData)
         setAddModalOpen(false)
     }
 
     const edit = (ticket: Ticket) => {
-        setJsonObj((prev) => ({
-            ...prev,
-            tickets: prev.tickets.map((t) => (t.ticketId === ticket.ticketId ? ticket : t)),
-        }))
-        saveData()
+        const nextData = {
+            ...jsonObj,
+            tickets: jsonObj.tickets.map((t) => (t.ticketId === ticket.ticketId ? ticket : t)),
+        }
+
+        setJsonObj(nextData)
+        saveData(nextData)
         setModalOpen(false)
     }
 
@@ -123,10 +132,13 @@ const Wrapper: FC = () => {
     }
 
     const onDelete = (ticketToDelete: Ticket) => {
-        setJsonObj((prev) => ({
-            ...prev,
-            tickets: prev.tickets.filter((ticket) => ticket.ticketId !== ticketToDelete.ticketId),
-        }))
+        const nextData = {
+            ...jsonObj,
+            tickets: jsonObj.tickets.filter((ticket) => ticket.ticketId !== ticketToDelete.ticketId),
+        }
+
+        setJsonObj(nextData)
+        saveData(nextData)
     }
 
     // initialize app
@@ -168,13 +180,15 @@ const Wrapper: FC = () => {
             />
             <Layout style={layoutStyle}>
                 <Header style={headerStyle}>
-                    <Flex gap="small" justify="space-between" align="center">
+                    <Flex gap="middle" justify="space-between" align="center">
                         <Button size="large" type="primary" shape="circle" onClick={reloadApp} icon={<SyncOutlined />} />
-                        <Button size="large" type="primary" shape="circle" onClick={saveData} icon={<SaveOutlined />} />
+                        <Button size="large" type="primary" shape="circle" onClick={() => saveData()} icon={<SaveOutlined />} />
                         <Button size="large" type="primary" shape="circle" onClick={readData} icon={<CloudDownloadOutlined />} />
-                        <Checkbox onChange={(e) => setIsAutosave(e.target.checked)}>Autosave</Checkbox>
+                        <Card>
+                            <Checkbox onChange={(e) => setIsAutosave(e.target.checked)}>Autosave</Checkbox>
+                        </Card>
                     </Flex>
-                    <Flex gap="small" justify="flex-end" align="center">
+                    <Flex gap="middle" justify="flex-end" align="center">
                         {selectedCellText.length > 0 && <Copy text={selectedCellText} />}
                         <Button size="large" type="primary" shape="circle" onClick={onAdd} icon={<PlusCircleOutlined />} />
                         <Segmented
@@ -186,7 +200,7 @@ const Wrapper: FC = () => {
                             ]}
                         />
                         <Counter num={jsonObj.tickets.length} />
-                        <Tag data={getStatusData()} />
+                        <Tag data={getStatusData()} lastTimeSaved={jsonObj.lastTimeSaved} />
                     </Flex>
                 </Header>
                 <Content style={contentStyle}>

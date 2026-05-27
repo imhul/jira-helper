@@ -22,6 +22,8 @@ export const JiraTable: FC<JiraTableProps> = memo(({
 }) => {
     const [selectedCellKey, setSelectedCellKey] = useState<string | null>(null)
 
+    // TODO: налаштувати ширину стовбців!
+
     useEffect(() => {
         if (!selectedCellKey) {
             return
@@ -70,7 +72,7 @@ export const JiraTable: FC<JiraTableProps> = memo(({
             columns={columns}
             dataSource={data.tickets}
             rowKey={(record) => record.ticketId}
-            tableLayout="auto"
+            tableLayout="fixed"
         />
     )
 })

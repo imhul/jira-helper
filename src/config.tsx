@@ -24,6 +24,7 @@ export enum ticketStatuses {
 // constants
 export const colorPrimary = "#9ccc65"
 export const colorDanger = "#ff3d00"
+export const colorBlue = "#1890ff"
 export const transparent = 'rgba(0, 0, 0, 0)'
 export const minute = 60 * 1000
 export const statusOptions = Object.entries(ticketStatuses).map(([value, label]) => ({ value, label }))

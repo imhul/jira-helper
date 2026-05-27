@@ -1,6 +1,6 @@
 import { useState } from 'react'
 // components
-import { Button, Popconfirm, Flex, Tag } from 'antd'
+import { Button, Popconfirm, Flex } from 'antd'
 // icons
 import {
     LockOutlined,
@@ -16,7 +16,7 @@ import type {
     TicketColumnActions,
 } from '../../types'
 // utils + config
-import { dataStatuses } from '../../config'
+import { dataStatuses, colorBlue, colorDanger } from '../../config'
 
 const Actions = ({ onEdit, onDelete, record }: ActionsProps) => {
     const [locked, setLocked] = useState(false)
@@ -29,7 +29,13 @@ const Actions = ({ onEdit, onDelete, record }: ActionsProps) => {
                 onClick={() => setLocked((prev) => !prev)}
             />
             {!locked && (<>
-                <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(record)} />
+                <Button
+                    type="text"
+                    icon={<EditOutlined style={{
+                        color: colorBlue,
+                    }} />}
+                    onClick={() => onEdit(record)}
+                />
                 <Popconfirm
                     title="Delete the ticket"
                     description="Are you sure to delete this ticket?"
@@ -37,7 +43,7 @@ const Actions = ({ onEdit, onDelete, record }: ActionsProps) => {
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Button type="text" icon={<DeleteOutlined />} />
+                    <Button type="text" icon={<DeleteOutlined style={{ color: colorDanger }} />} />
                 </Popconfirm>
             </>)}
         </Flex>
@@ -54,6 +60,9 @@ const createColumns = ({ onEdit, onDelete, onSelectCell, selectedCellKey }: Tick
                 onSelectCell(`${record.ticketId}:${columnKey}`, cell.innerText)
             }
         },
+        style: {
+            verticalAlign: 'top',
+        },
     })
 
     return [
@@ -62,49 +71,54 @@ const createColumns = ({ onEdit, onDelete, onSelectCell, selectedCellKey }: Tick
             dataIndex: 'order',
             key: 'order',
             onCell: createSelectableCell('order'),
+            width: 40,
         },
         {
             title: 'ID',
             dataIndex: 'ticketId',
             key: 'ticketId',
             onCell: createSelectableCell('ticketId'),
+            filterSearch: true,
+            width: 130,
         },
         {
             title: 'Title',
             dataIndex: 'ticketTitle',
             key: 'ticketTitle',
             onCell: createSelectableCell('ticketTitle'),
+            filterSearch: true,
+            width: 130,
         },
         {
             title: 'Branch',
             dataIndex: 'branchName',
             key: 'branchName',
             onCell: createSelectableCell('branchName'),
+            width: 130,
         },
         {
             title: 'Push',
             dataIndex: 'pushCommand',
             key: 'pushCommand',
             onCell: createSelectableCell('pushCommand'),
+            width: 130,
         },
         {
             title: 'Commit',
             dataIndex: 'commitMessage',
             key: 'commitMessage',
             onCell: createSelectableCell('commitMessage'),
+            width: 130,
         },
         {
-            title: 'Status',
+            title: 'S',
             dataIndex: 'ticketStatus',
             key: 'ticketStatus',
-            onCell: createSelectableCell('ticketStatus'),
+            onCell: () => ({ style: { verticalAlign: 'top' } }),
+            width: 40,
             render: (status: TicketStatus) => {
                 const statusData = dataStatuses[status] || dataStatuses['absent']
-                return (
-                    <Tag icon={statusData.icon} color={statusData.status}>
-                        {statusData.name}
-                    </Tag>
-                )
+                return statusData.icon
             }
         },
         {
@@ -130,16 +144,21 @@ const createColumns = ({ onEdit, onDelete, onSelectCell, selectedCellKey }: Tick
             dataIndex: 'gameName',
             key: 'gameName',
             onCell: createSelectableCell('gameName'),
+            filterSearch: true,
+            filterMode: 'menu',
         },
         {
-            title: 'Additional Info',
+            title: 'Notes',
             dataIndex: 'additionalInfo',
             key: 'additionalInfo',
             onCell: createSelectableCell('additionalInfo'),
+            filterSearch: true,
+            filters: []
         },
         {
             title: 'Actions',
             key: 'actions',
+            onCell: () => ({ style: { verticalAlign: 'top' } }),
             render: (_, record) => {
                 return (<Actions onEdit={onEdit} onDelete={onDelete} record={record} />)
             },

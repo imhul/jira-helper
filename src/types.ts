@@ -1,8 +1,17 @@
 import type { FC, MouseEvent, CSSProperties } from 'react'
-import type { TableProps } from 'antd'
+import type { TableProps, TagProps } from 'antd'
 import { ticketStatuses, defaultJson } from './config'
 
 // Interfaces
+export interface SatusTagProps {
+    data: {
+        status: string;
+        name: string;
+        icon: React.ReactNode;
+    };
+    lastTimeSaved: number;
+}
+
 export interface StatusData {
     status: 'processing' | 'success' | 'error' | 'default',
     name: string,
@@ -88,6 +97,7 @@ export type TicketStatus = 'progress' | 'done' | 'review' | 'qa' | 'pending depl
 export type CreatedColumns = TableProps<JsonData['tickets'][number]>['columns']
 export type {
     FC,
+    TagProps,
     MouseEvent,
     TableProps,
     CSSProperties
