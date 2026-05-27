@@ -80,12 +80,12 @@ export const dataStatuses: Record<string, StatusData> = {
     readingError: { status: 'error', name: 'reading error', icon: <CloseCircleOutlined size={24} /> },
 }
 
-export const standartRules = [{
+export const standartRules = {
     min: 3,
     max: 250,
     required: false,
     message: 'This string too short or too long!',
-}]
+}
 
 export const defaultJson: JsonData = {
     tickets: [
@@ -111,52 +111,65 @@ export const formItems = [
     {
         label: 'Ticket Title',
         name: 'ticketTitle',
-        rules: standartRules,
+        rules: [
+            standartRules,
+            { required: true, message: 'Ticket Title is required!' }
+        ],
+        readonly: false,
     },
     {
         label: 'Branch',
         name: 'branchName',
-        rules: standartRules,
+        rules: [standartRules],
+        readonly: true,
     },
     {
         label: 'Push Command',
         name: 'pushCommand',
-        rules: standartRules,
+        rules: [standartRules],
+        readonly: true,
     },
     {
         label: 'Commit',
         name: 'commitMessage',
-        rules: standartRules,
+        rules: [standartRules],
+        readonly: true,
     },
     {
         label: 'Status',
         name: 'ticketStatus',
         rules: [],
+        readonly: true,
     },
     {
         label: 'Ticket Link',
         name: 'ticketLink',
-        rules: standartRules,
+        rules: [standartRules],
+        readonly: true,
     },
     {
         label: 'Repository',
         name: 'gitLink',
-        rules: standartRules,
+        rules: [standartRules],
+        readonly: false,
     },
     {
         label: 'PR',
         name: 'prLink',
-        rules: standartRules,
+        rules: [standartRules],
+        readonly: false,
     },
     {
         label: 'Game',
         name: 'gameName',
-        rules: standartRules,
+        rules: [standartRules],
+        readonly: false,
     },
     {
         label: 'Notes',
         name: 'additionalInfo',
-        rules: standartRules,
+        rules: [standartRules],
+        readonly: false,
     }
 ]
 
@@ -164,7 +177,22 @@ export const addFormItems = [
     {
         label: 'Ticket ID',
         name: 'ticketId',
-        rules: standartRules,
+        readonly: false,
+        rules: [
+            {
+                min: 8,
+                max: 10,
+                required: true,
+            },
+            {
+                pattern: /^GMDEV-\d{3,5}$/, 
+                message: 'Ticket ID must be in format: GMDEV-12345',
+            },
+            {
+                required: true,
+                message: 'Ticket ID is required!'
+            }
+        ],
     },
     ...formItems,
 ]

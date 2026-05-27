@@ -3,7 +3,13 @@ import { Modal, Flex, Form, Input, Select } from 'antd'
 // types
 import type { FC, FormValues, EditModalProps } from '../types'
 // utils + config
-import { formItems, addFormItems, statusOptions, defaultJson } from '../config'
+import { getFormattedData } from '../utils'
+import {
+    formItems,
+    defaultJson,
+    addFormItems,
+    statusOptions,
+} from '../config'
 
 
 const FormItem = Form.Item
@@ -35,7 +41,7 @@ export const EditModal: FC<EditModalProps> = ({
                     .entries(formValues)
                     .filter(([_, value]) => value !== undefined)
             )
-            
+
             if (isAdding) {
                 add({ ...defaultJson.tickets[0], ...definedValues })
             } else {
@@ -101,6 +107,8 @@ export const EditModal: FC<EditModalProps> = ({
                                     ? (
                                         <Input
                                             type="text"
+                                            allowClear
+                                            readOnly={item.readonly}
                                         />
                                     )
                                     : (
