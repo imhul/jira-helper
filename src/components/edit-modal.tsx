@@ -4,13 +4,16 @@ import { Modal, Flex, Form, Input, Select } from 'antd'
 import type { FC } from 'react'
 import type { Ticket } from '../config'
 // utils + config
-import { formItems, statusOptions, ticketStatuses } from '../config'
+import { formItems, statusOptions, ticketStatuses, defaultJson } from '../config'
 
 interface EditModalProps {
     isModalOpen: boolean;
     setIsModalOpen: (value: boolean) => void;
     edit: (ticket: Ticket) => void;
+    add: (ticket: Ticket) => void;
     ticket: Ticket;
+    order: number;
+    isAdding: boolean;
 }
 
 interface FormValues {
@@ -32,8 +35,11 @@ const leftColumnItems = formItems.slice(0, midpoint)
 const rightColumnItems = formItems.slice(midpoint)
 
 export const EditModal: FC<EditModalProps> = ({
+    add,
     edit,
+    order,
     ticket,
+    isAdding,
     isModalOpen,
     setIsModalOpen,
 }) => {
@@ -41,12 +47,19 @@ export const EditModal: FC<EditModalProps> = ({
 
     const ok = (formValues: FormValues) => {
         console.info('Form values on submit: ', formValues)
+
         if (Object.values(formValues).some(value => value !== undefined)) {
             const definedValues = Object.fromEntries(
-                Object.entries(formValues).filter(([_, value]) => value !== undefined)
+                Object
+                    .entries(formValues)
+                    .filter(([_, value]) => value !== undefined)
             )
             console.info('Defined form values: ', definedValues)
-            edit({ ...ticket, ...definedValues })
+            if (isAdding) {
+                add({ ...defaultJson.tickets[0], ...definedValues })
+            } else {
+                edit({ ...ticket, ...definedValues })
+            }
         }
         setIsModalOpen(false)
     }
@@ -57,11 +70,11 @@ export const EditModal: FC<EditModalProps> = ({
 
     return (
         <Modal
-            title={`Edit Ticket: ${ticket.ticketId}`}
+            title={isAdding ? `Create Ticket #${order}` : `Edit Ticket: ${ticket.ticketId}`}
             closable={{ 'aria-label': 'Close' }}
             open={isModalOpen}
             onCancel={cancel}
-            okText="Save"
+            okText={isAdding ? 'Create' : 'Save'}
             cancelText="Cancel"
             centered
             destroyOnHidden
@@ -79,7 +92,7 @@ export const EditModal: FC<EditModalProps> = ({
                     layout="horizontal"
                     form={form}
                     name="ticket-editor"
-                    initialValues={{ ...ticket }}
+                    initialValues={isAdding ? { ...defaultJson.tickets[0] } : { ...ticket }}
                     clearOnDestroy
                     onFinish={ok}
                 >

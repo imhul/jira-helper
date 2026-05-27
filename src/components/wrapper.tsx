@@ -3,7 +3,6 @@ import { memo, useState, useEffect } from "react"
 import { Flex, Checkbox, Layout, Segmented, Button, notification } from 'antd'
 import { JiraTable as Table } from "./table"
 import { JiraGrid as Grid } from "./grid"
-import { AddModal } from "./add-modal"
 import { EditModal } from "./edit-modal"
 import { SatusTag as Tag } from "./tag"
 import Counter from "./counter"
@@ -30,7 +29,7 @@ const Wrapper: React.FC = () => {
     const [isAutosave, setIsAutosave] = useState(false)
     const [isList, setIsList] = useState(true)
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [modalOpen, setModalOpen] = useState(false)
     const [selectedTicket, setSelectedTicket] = useState<Ticket>(defaultJson.tickets[0])
 
     const getStatusData = () => {
@@ -88,12 +87,12 @@ const Wrapper: React.FC = () => {
             tickets: prev.tickets.map((t) => (t.ticketId === ticket.ticketId ? ticket : t)),
         }))
         save()
-        setIsEditModalOpen(false)
+        setModalOpen(false)
     }
 
     const onEdit = (ticket: Ticket) => {
         setSelectedTicket(ticket)
-        setIsEditModalOpen(true)
+        setModalOpen(true)
     }
 
     const onDelete = (ticketToDelete: Ticket) => {
@@ -123,12 +122,14 @@ const Wrapper: React.FC = () => {
     return (
         <main className="container">
             {contextHolder}
-            <AddModal add={add} isModalOpen={isAddModalOpen} setIsModalOpen={setIsAddModalOpen} />
             <EditModal
+                add={add}
                 edit={edit}
-                isModalOpen={isEditModalOpen}
-                setIsModalOpen={setIsEditModalOpen}
+                order={jsonObj.tickets.length + 1}
+                isModalOpen={modalOpen}
+                setIsModalOpen={setModalOpen}
                 ticket={selectedTicket}
+                isAdding={isAddModalOpen}
             />
             <Layout style={layoutStyle}>
                 <Header style={headerStyle}>

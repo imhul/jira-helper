@@ -187,6 +187,15 @@ export const formItems = [
     }
 ]
 
+export const addFormItems = [
+    {
+        label: 'Ticket ID',
+        name: 'ticketId',
+        rules: standartRules,
+    },
+    ...formItems,
+]
+
 export type CreatedColumns = TableProps<JsonData['tickets'][number]>['columns']
 
 export const createColumns = ({ onEdit, onDelete }: TicketColumnActions): CreatedColumns => [
