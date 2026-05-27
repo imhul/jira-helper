@@ -14,8 +14,8 @@ import {
 
 const FormItem = Form.Item
 const midpoint = Math.ceil(formItems.length / 2)
-const leftColumnItems = formItems.slice(0, midpoint)
-const rightColumnItems = formItems.slice(midpoint)
+const editLeftColumnItems = formItems.slice(0, midpoint)
+const editRightColumnItems = formItems.slice(midpoint)
 const addMidpoint = Math.ceil(addFormItems.length / 2)
 const addLeftColumnItems = addFormItems.slice(0, addMidpoint)
 const addRightColumnItems = addFormItems.slice(addMidpoint)
@@ -32,7 +32,31 @@ export const EditModal: FC<EditModalProps> = ({
     const [form] = Form.useForm()
     const modalColumns = isAdding
         ? [addLeftColumnItems, addRightColumnItems]
-        : [leftColumnItems, rightColumnItems]
+        : [editLeftColumnItems, editRightColumnItems]
+
+    const syncFormattedFields = async () => {
+        const requiredFieldNames = (isAdding ? addFormItems : formItems)
+            .filter((item) => item.rules.some((rule) => rule.required))
+            .map((item) => item.name)
+
+        if (requiredFieldNames.length === 0) {
+            return
+        }
+
+        try {
+            const values = await form.validateFields(requiredFieldNames, {
+                validateOnly: true,
+            }) as { ticketId?: string, ticketTitle?: string }
+
+            if (!values.ticketId || !values.ticketTitle) {
+                return
+            }
+
+            form.setFieldsValue(getFormattedData(values.ticketTitle, values.ticketId))
+        } catch {
+            console.warn('Required fields are not valid yet, skipping formatted data sync.')
+        }
+    }
 
     const ok = (formValues: FormValues) => {
         if (Object.values(formValues).some(value => value !== undefined)) {
@@ -81,6 +105,7 @@ export const EditModal: FC<EditModalProps> = ({
                     name="ticket-editor"
                     initialValues={isAdding ? { ...defaultJson.tickets[0] } : { ...ticket }}
                     clearOnDestroy
+                    onValuesChange={syncFormattedFields}
                     onFinish={ok}
                 >
                     {dom}
@@ -102,6 +127,7 @@ export const EditModal: FC<EditModalProps> = ({
                                 label={item.label}
                                 rules={item.rules}
                                 style={{ marginBottom: 0 }}
+                                validateTrigger="onBlur"
                             >
                                 {item.rules.length > 0
                                     ? (

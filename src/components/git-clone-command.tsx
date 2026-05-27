@@ -10,7 +10,8 @@ const GitCloneCommand: FC = () => {
     const [sshUrl, setSshUrl] = useState('')
 
     return (
-        <Card title="Git Clone Command" style={{ width: '100%' }}>
+        <Card style={{ width: '100%' }}>
+            <div style={{ textAlign: 'left' }}>Git Clone Command</div>
             <Flex gap="small" align="center" justify="space-between">
                 <Flex align="center" flex="1 0 45%">
                     <Input type="text" allowClear value={sshUrl} onChange={(e) => setSshUrl(e.target.value)} />

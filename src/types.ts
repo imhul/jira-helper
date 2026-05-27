@@ -32,6 +32,8 @@ export interface JsonData {
 export interface TicketColumnActions {
     onEdit: (ticket: Ticket) => void;
     onDelete: (ticket: Ticket) => void;
+    onSelectCell: (cellKey: string, text: string) => void;
+    selectedCellKey: string | null;
 }
 
 export interface JiraTableProps {
@@ -74,6 +76,7 @@ export interface FormValues {
     gitLink: string | undefined;
     prLink: string | undefined;
     pushCommand: string | undefined;
+    ticketId: string | undefined;
     ticketLink: string | undefined;
     ticketStatus: keyof typeof ticketStatuses | undefined;
     ticketTitle: string | undefined;

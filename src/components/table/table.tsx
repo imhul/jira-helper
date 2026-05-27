@@ -1,10 +1,9 @@
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 // types
 import type {
     FC,
     Ticket,
     JsonData,
-    MouseEvent,
     JiraTableProps,
 } from '../../types'
 // components
@@ -21,6 +20,29 @@ export const JiraTable: FC<JiraTableProps> = memo(({
     onEdit,
     onDelete,
 }) => {
+    const [selectedCellKey, setSelectedCellKey] = useState<string | null>(null)
+
+    useEffect(() => {
+        if (!selectedCellKey) {
+            return
+        }
+
+        const clearSelectedCell = (event: globalThis.MouseEvent) => {
+            const target = event.target as HTMLElement | null
+            if (target?.closest('[data-jira-cell-key]')) {
+                return
+            }
+
+            setSelectedCellKey(null)
+        }
+
+        document.addEventListener('click', clearSelectedCell, true)
+
+        return () => {
+            document.removeEventListener('click', clearSelectedCell, true)
+        }
+    }, [selectedCellKey])
+
     const editTicket = (ticket: Ticket) => {
         setDirty('dirty')
         onEdit?.(ticket)
@@ -31,19 +53,16 @@ export const JiraTable: FC<JiraTableProps> = memo(({
         onDelete?.(ticket)
     }
 
+    const selectCell = (cellKey: string, text: string) => {
+        setSelectedCellKey(cellKey)
+        setText(text)
+    }
+
     const columns = createColumns({
         onEdit: editTicket,
         onDelete: deleteTicket,
-    })
-
-    const onRow = () => ({
-        onClick: (event: MouseEvent) => {
-            const target = event.target as HTMLElement
-            if (target.classList.contains('ant-table-cell') && target.innerText.length > 0) {
-                setText(target.innerText)
-                // TODO: replace it to header in button form with tooltip
-            }
-        }
+        onSelectCell: selectCell,
+        selectedCellKey,
     })
 
     return (
@@ -52,7 +71,6 @@ export const JiraTable: FC<JiraTableProps> = memo(({
             dataSource={data.tickets}
             rowKey={(record) => record.ticketId}
             tableLayout="auto"
-            onRow={onRow}
         />
     )
 })

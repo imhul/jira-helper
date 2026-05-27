@@ -180,9 +180,9 @@ export const addFormItems = [
         readonly: false,
         rules: [
             {
-                min: 8,
-                max: 10,
-                required: true,
+                min: 9,
+                max: 11,
+                message: 'Ticket ID must be between 9 and 11 characters long!',
             },
             {
                 pattern: /^GMDEV-\d{3,5}$/, 
