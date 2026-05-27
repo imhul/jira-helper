@@ -13,5 +13,5 @@ This template should help get you started developing with Tauri, React and Types
 
 - [x] Add basic UI components (table, form, modals)
 - [x] Implement local storage for tickets
-- [] Add search by fuse.js
-- [] Add filter functionality
+- [ ] Add search by fuse.js
+- [ ] Add filter functionality
