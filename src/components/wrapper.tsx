@@ -69,7 +69,6 @@ const Wrapper: React.FC = () => {
 
     const add = (ticket: Ticket) => {
         console.info('Adding ticket: ', ticket)
-        setSelectedTicket(ticket)
         setJsonObj((prev) => ({
             ...prev,
             tickets: [...prev.tickets, ticket],
@@ -84,7 +83,6 @@ const Wrapper: React.FC = () => {
 
     const edit = (ticket: Ticket) => {
         console.info('Editing ticket: ', ticket)
-        setSelectedTicket(ticket)
         setJsonObj((prev) => ({
             ...prev,
             tickets: prev.tickets.map((t) => (t.ticketId === ticket.ticketId ? ticket : t)),
@@ -93,7 +91,8 @@ const Wrapper: React.FC = () => {
         setIsEditModalOpen(false)
     }
 
-    const onEdit = () => {
+    const onEdit = (ticket: Ticket) => {
+        setSelectedTicket(ticket)
         setIsEditModalOpen(true)
     }
 
