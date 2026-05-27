@@ -1,17 +1,24 @@
-import { CSSProperties } from 'react'
 // components
 import { Button, Popconfirm, Flex, Tag } from 'antd'
 import Copy from './components/copy'
 // icons
 import {
-    CheckCircleOutlined,
-    CloseCircleOutlined,
-    DeleteOutlined,
     SyncOutlined,
     EditOutlined,
+    DeleteOutlined,
+    CheckCircleOutlined,
+    CloseCircleOutlined,
 } from '@ant-design/icons'
 // types
-import type { TableProps } from 'antd'
+import type {
+    JsonData,
+    StatusData,
+    TicketStatus,
+    CSSProperties,
+    CreatedColumns,
+    TicketColumnActions,
+} from './types'
+
 
 // enums
 export enum ticketStatuses {
@@ -27,41 +34,6 @@ export const colorDanger = "#ff3d00"
 export const transparent = 'rgba(0, 0, 0, 0)'
 export const minute = 60 * 1000
 export const statusOptions = Object.entries(ticketStatuses).map(([value, label]) => ({ value, label }))
-
-// Interfaces
-export interface StatusData {
-    status: 'processing' | 'success' | 'error' | 'default',
-    name: string,
-    icon: React.ReactNode,
-}
-
-export interface Ticket {
-    order: number;
-    ticketId: string;
-    ticketTitle: string;
-    branchName: string;
-    pushCommand: string;
-    commitMessage: string;
-    ticketStatus: TicketStatus;
-    ticketLink: string;
-    gitLink: string;
-    prLink: string;
-    gameName: string;
-    additionalInfo: string;
-}
-
-export interface JsonData {
-    tickets: Ticket[];
-}
-
-export interface TicketColumnActions {
-    onEdit: (ticket: Ticket) => void;
-    onDelete: (ticket: Ticket) => void;
-}
-
-// types
-export type TicketStatus = 'progress' | 'done' | 'review' | 'qa' | 'pending deploy'
-export type CreatedColumns = TableProps<JsonData['tickets'][number]>['columns']
 
 // styles
 export const headerStyle: CSSProperties = {
@@ -204,6 +176,12 @@ export const addFormItems = [
 ]
 
 // functions
+export const renderTextCell = (text: string) => (
+    <Flex justify="space-between" align="center">
+        <span>{text}</span> <Copy text={text} />
+    </Flex>
+)
+
 export const createColumns = ({ onEdit, onDelete }: TicketColumnActions): CreatedColumns => [
     {
         title: '#',
@@ -214,9 +192,7 @@ export const createColumns = ({ onEdit, onDelete }: TicketColumnActions): Create
         title: 'ID',
         dataIndex: 'ticketId',
         key: 'ticketId',
-        render: (text: string) => (
-            <Flex>{text} <Copy text={text} /></Flex>
-        )
+        // render: (text: string) => renderTextCell(text)
     },
     {
         title: 'Title',

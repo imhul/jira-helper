@@ -1,18 +1,17 @@
 import { memo } from 'react'
 // types
-import type { FC } from 'react'
+import type {
+    FC,
+    Ticket,
+    JsonData,
+    JiraTableProps,
+    OnSelectCellParams,
+} from '../../types'
 // components
 import { Table } from 'antd'
 // utils + config
-import type { JsonData, Ticket } from '../../config'
 import { createColumns, defaultJson } from '../../config'
 
-interface JiraTableProps {
-    setDirty: (status: string) => void;
-    data: JsonData;
-    onEdit?: (ticket: Ticket) => void;
-    onDelete?: (ticket: Ticket) => void;
-}
 
 export const JiraTable: FC<JiraTableProps> = memo(({ setDirty, data = defaultJson, onEdit, onDelete }) => {
     console.info('Rendering JiraTable with data: ', data)
@@ -32,11 +31,35 @@ export const JiraTable: FC<JiraTableProps> = memo(({ setDirty, data = defaultJso
         onDelete: deleteTicket,
     })
 
+    const onSelectCell = (params: OnSelectCellParams) => {
+        console.info('Cell selected: ', params)
+    }
+
+    const onRow = (record: Ticket, rowIndex?: number) => {
+        console.info('onRow called with record: ', {record, columns})
+        return ({
+            onClick: (event: React.MouseEvent<HTMLTableRowElement, MouseEvent>) => {
+                const target = event.target as HTMLElement
+                if (target.classList.contains('ant-table-cell') && columns && target.innerText.length > 0) {
+                    onSelectCell({
+                        rowIndex: rowIndex || 0,
+                        value: target.innerText,
+                        ticketId: record.ticketId,
+                        // row: columns.find(col => col.onCell === target.getAttribute('data-column-key')),
+                    })
+                    // TODO: implement copy logic here!
+                }
+            }
+        })
+    }
+
     return (
         <Table<JsonData['tickets'][number]>
             columns={columns}
             dataSource={data.tickets}
             rowKey={(record) => record.ticketId}
+            tableLayout="auto"
+            onRow={onRow}
         />
     )
 })

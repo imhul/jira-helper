@@ -1,32 +1,27 @@
 import { useState, useCallback } from "react"
-import { Button, Tooltip } from "antd"
+import { Button, Popover } from "antd"
 import { CopyOutlined } from '@ant-design/icons'
 
 const Copy = ({ text }: { text: string }) => {
-    const [disabled, setDisabled] = useState(true)
-
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(text)
-    }
+    const [open, setOpen] = useState(true)
 
     const onCopy = useCallback(() => {
-        if (!disabled) return
-        copyToClipboard()
-        setDisabled(false)
-        const timer = setTimeout(() => setDisabled(true), 2000)
+        if (!open) return
+        navigator.clipboard.writeText(text)
+        setOpen(false)
+        const timer = setTimeout(() => setOpen(true), 2000)
         return () => clearTimeout(timer)
-    }, [disabled, text])
+    }, [open, text])
 
     return (
-        <Tooltip title={disabled ? null : 'prompt text'}>
+        <Popover open={!open} content="Copied!">
             <Button
                 onClick={onCopy}
-                shape="circle"
                 size="large"
-                type="primary"
+                type="text"
                 icon={<CopyOutlined />}
             />
-        </Tooltip>
+        </Popover>
     )
 }
 

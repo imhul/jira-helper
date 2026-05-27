@@ -1,33 +1,10 @@
 // components
 import { Modal, Flex, Form, Input, Select } from 'antd'
 // types
-import type { FC } from 'react'
-import type { Ticket } from '../config'
+import type { FC, FormValues, EditModalProps } from '../types'
 // utils + config
-import { formItems, statusOptions, ticketStatuses, defaultJson } from '../config'
+import { formItems, statusOptions, defaultJson } from '../config'
 
-interface EditModalProps {
-    isModalOpen: boolean;
-    setIsModalOpen: (value: boolean) => void;
-    edit: (ticket: Ticket) => void;
-    add: (ticket: Ticket) => void;
-    ticket: Ticket;
-    order: number;
-    isAdding: boolean;
-}
-
-interface FormValues {
-    additionalInfo: string | undefined;
-    branchName: string | undefined;
-    commitMessage: string | undefined;
-    gameName: string | undefined;
-    gitLink: string | undefined;
-    prLink: string | undefined;
-    pushCommand: string | undefined;
-    ticketLink: string | undefined;
-    ticketStatus: keyof typeof ticketStatuses | undefined;
-    ticketTitle: string | undefined;
-}
 
 const FormItem = Form.Item
 const midpoint = Math.ceil(formItems.length / 2)

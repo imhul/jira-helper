@@ -15,14 +15,29 @@ import {
     PlusCircleOutlined,
 } from '@ant-design/icons'
 // types
-import type { Ticket } from '../config'
+import type { FC, Ticket } from '../types'
 // utils + config
-import { readJson, saveJson, notify, getErrorText, setDefaultAppSize, centerAppWindow } from "../utils"
-import { dataStatuses, layoutStyle, headerStyle, contentStyle, defaultJson, minute } from "../config"
+import {
+    notify,
+    readJson,
+    saveJson,
+    getErrorText,
+    centerAppWindow,
+    setDefaultAppSize,
+} from "../utils"
+import {
+    minute,
+    layoutStyle,
+    headerStyle,
+    footerStyle,
+    defaultJson,
+    contentStyle,
+    dataStatuses,
+} from "../config"
 
-const { Header, Content } = Layout
+const { Header, Footer, Content } = Layout
 
-const Wrapper: React.FC = () => {
+const Wrapper: FC = () => {
     const [api, contextHolder] = notification.useNotification()
     const [jsonObj, setJsonObj] = useState(defaultJson)
     const [status, setStatus] = useState('absent')
@@ -163,6 +178,9 @@ const Wrapper: React.FC = () => {
                         : <Grid setDirty={setStatus} data={jsonObj} onEdit={onEdit} onDelete={onDelete} />
                     }
                 </Content>
+                <Footer style={footerStyle}>
+                    footer
+                </Footer>
             </Layout>
         </main>
     )
