@@ -5,9 +5,6 @@ export type DeviceScreenSize = {
 	height: number;
 }
 
-const minAppWidth = 1200
-const minAppHeight = 800
-
 export function getDeviceScreenSize(): DeviceScreenSize {
 	if (typeof window === "undefined" || typeof window.screen === "undefined") {
 		throw new Error("Device screen API is not available in this environment.")

@@ -117,12 +117,7 @@ const createColumns = ({ onEdit, onDelete }: TicketColumnActions): CreatedColumn
         {
             title: 'Actions',
             key: 'actions',
-            render: (value, record, index) => {
-                console.info('Rendering actions for record:', {
-                    value,
-                    record,
-                    index,
-                })
+            render: (_, record) => {
                 return (<Actions onEdit={onEdit} onDelete={onDelete} record={record} />)
             },
         }

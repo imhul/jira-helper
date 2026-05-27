@@ -73,7 +73,6 @@ const Wrapper: FC = () => {
         setStatus('reading')
         try {
             const savedJson = await readJson()
-            console.info('Readed JSON:', savedJson)
             setJsonObj(savedJson as typeof defaultJson)
             setStatus('readed')
             // notify('success', 'Success!', 'Data is successfully loaded!', api)
@@ -88,7 +87,6 @@ const Wrapper: FC = () => {
     }
 
     const add = (ticket: Ticket) => {
-        console.info('Adding ticket: ', ticket)
         setJsonObj((prev) => ({
             ...prev,
             tickets: [...prev.tickets, ticket],
@@ -98,7 +96,6 @@ const Wrapper: FC = () => {
     }
 
     const edit = (ticket: Ticket) => {
-        console.info('Editing ticket: ', ticket)
         setJsonObj((prev) => ({
             ...prev,
             tickets: prev.tickets.map((t) => (t.ticketId === ticket.ticketId ? ticket : t)),
@@ -109,9 +106,18 @@ const Wrapper: FC = () => {
 
     const onAdd = () => {
         setAddModalOpen(true)
+        setModalOpen(true)
+    }
+
+    const setEditModalOpen = (value: boolean) => {
+        setModalOpen(value)
+        if (!value) {
+            setAddModalOpen(false)
+        }
     }
 
     const onEdit = (ticket: Ticket) => {
+        setAddModalOpen(false)
         setSelectedTicket(ticket)
         setModalOpen(true)
     }
@@ -142,6 +148,12 @@ const Wrapper: FC = () => {
         }
     }, [isAutosave])
 
+    useEffect(() => {
+        if (addModalOpen) {
+            setModalOpen(true)
+        }
+    }, [addModalOpen])
+
     return (
         <main className="container">
             {contextHolder}
@@ -150,7 +162,7 @@ const Wrapper: FC = () => {
                 edit={edit}
                 order={jsonObj.tickets.length + 1}
                 isModalOpen={modalOpen}
-                setIsModalOpen={setModalOpen}
+                setIsModalOpen={setEditModalOpen}
                 ticket={selectedTicket}
                 isAdding={addModalOpen}
             />

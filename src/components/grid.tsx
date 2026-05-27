@@ -3,8 +3,7 @@ import { memo } from 'react'
 import type { FC, JiraGridProps } from '../types'
 
 export const JiraGrid: FC<JiraGridProps> = memo(({ setDirty, data }) => {
-    console.info('Rendering JiraGrid with data:', data)
-    
+
     return (
         <div className="grid-container" onClick={() => setDirty('dirty')}>
             <div className="grid-item">1</div>

@@ -3,13 +3,16 @@ import { Modal, Flex, Form, Input, Select } from 'antd'
 // types
 import type { FC, FormValues, EditModalProps } from '../types'
 // utils + config
-import { formItems, statusOptions, defaultJson } from '../config'
+import { formItems, addFormItems, statusOptions, defaultJson } from '../config'
 
 
 const FormItem = Form.Item
 const midpoint = Math.ceil(formItems.length / 2)
 const leftColumnItems = formItems.slice(0, midpoint)
 const rightColumnItems = formItems.slice(midpoint)
+const addMidpoint = Math.ceil(addFormItems.length / 2)
+const addLeftColumnItems = addFormItems.slice(0, addMidpoint)
+const addRightColumnItems = addFormItems.slice(addMidpoint)
 
 export const EditModal: FC<EditModalProps> = ({
     add,
@@ -21,17 +24,18 @@ export const EditModal: FC<EditModalProps> = ({
     setIsModalOpen,
 }) => {
     const [form] = Form.useForm()
+    const modalColumns = isAdding
+        ? [addLeftColumnItems, addRightColumnItems]
+        : [leftColumnItems, rightColumnItems]
 
     const ok = (formValues: FormValues) => {
-        console.info('Form values on submit: ', formValues)
-
         if (Object.values(formValues).some(value => value !== undefined)) {
             const definedValues = Object.fromEntries(
                 Object
                     .entries(formValues)
                     .filter(([_, value]) => value !== undefined)
             )
-            console.info('Defined form values: ', definedValues)
+            
             if (isAdding) {
                 add({ ...defaultJson.tickets[0], ...definedValues })
             } else {
@@ -78,7 +82,7 @@ export const EditModal: FC<EditModalProps> = ({
             )}
         >
             <Flex gap="middle" align="start" justify="space-between" wrap>
-                {[leftColumnItems, rightColumnItems].map((columnItems, columnIndex) => (
+                {modalColumns.map((columnItems, columnIndex) => (
                     <Flex
                         key={columnIndex}
                         vertical

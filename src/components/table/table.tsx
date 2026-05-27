@@ -21,8 +21,6 @@ export const JiraTable: FC<JiraTableProps> = memo(({
     onEdit,
     onDelete,
 }) => {
-    console.info('Rendering JiraTable with data: ', data)
-
     const editTicket = (ticket: Ticket) => {
         setDirty('dirty')
         onEdit?.(ticket)
