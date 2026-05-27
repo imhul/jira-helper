@@ -1,6 +1,8 @@
 import { CSSProperties } from 'react'
 // components
 import { Button, Popconfirm, Flex, Tag } from 'antd'
+import Copy from './components/copy'
+// icons
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
@@ -11,11 +13,57 @@ import {
 // types
 import type { TableProps } from 'antd'
 
+// enums
+export enum ticketStatuses {
+    progress = "In Progress",
+    done = "Done",
+    review = "In Review",
+    qa = "QA",
+}
+
+// constants
 export const colorPrimary = "#9ccc65"
 export const colorDanger = "#ff3d00"
 export const transparent = 'rgba(0, 0, 0, 0)'
 export const minute = 60 * 1000
+export const statusOptions = Object.entries(ticketStatuses).map(([value, label]) => ({ value, label }))
 
+// Interfaces
+export interface StatusData {
+    status: 'processing' | 'success' | 'error' | 'default',
+    name: string,
+    icon: React.ReactNode,
+}
+
+export interface Ticket {
+    order: number;
+    ticketId: string;
+    ticketTitle: string;
+    branchName: string;
+    pushCommand: string;
+    commitMessage: string;
+    ticketStatus: TicketStatus;
+    ticketLink: string;
+    gitLink: string;
+    prLink: string;
+    gameName: string;
+    additionalInfo: string;
+}
+
+export interface JsonData {
+    tickets: Ticket[];
+}
+
+export interface TicketColumnActions {
+    onEdit: (ticket: Ticket) => void;
+    onDelete: (ticket: Ticket) => void;
+}
+
+// types
+export type TicketStatus = 'progress' | 'done' | 'review' | 'qa' | 'pending deploy'
+export type CreatedColumns = TableProps<JsonData['tickets'][number]>['columns']
+
+// styles
 export const headerStyle: CSSProperties = {
     width: '100%',
     textAlign: 'center',
@@ -56,21 +104,6 @@ export const layoutStyle: CSSProperties = {
     width: '100%',
 }
 
-export enum ticketStatuses {
-    progress = "In Progress",
-    done = "Done",
-    review = "In Review",
-    qa = "QA",
-}
-
-export const statusOptions = Object.entries(ticketStatuses).map(([value, label]) => ({ value, label }))
-
-export interface StatusData {
-    status: 'processing' | 'success' | 'error' | 'default',
-    name: string,
-    icon: React.ReactNode,
-}
-
 export const dataStatuses: Record<string, StatusData> = {
     absent: { status: 'default', name: '', icon: <SyncOutlined size={24} /> },
     dirty: { status: 'processing', name: 'edited', icon: <EditOutlined size={24} /> },
@@ -80,32 +113,6 @@ export const dataStatuses: Record<string, StatusData> = {
     reading: { status: 'processing', name: 'reading', icon: <SyncOutlined size={24} spin /> },
     readed: { status: 'success', name: 'readed', icon: <CheckCircleOutlined size={24} /> },
     readingError: { status: 'error', name: 'reading error', icon: <CloseCircleOutlined size={24} /> },
-}
-
-export interface Ticket {
-    order: number;
-    ticketId: string;
-    ticketTitle: string;
-    branchName: string;
-    pushCommand: string;
-    commitMessage: string;
-    ticketStatus: TicketStatus;
-    ticketLink: string;
-    gitLink: string;
-    prLink: string;
-    gameName: string;
-    additionalInfo: string;
-}
-
-export interface JsonData {
-    tickets: Ticket[];
-}
-
-export type TicketStatus = 'progress' | 'done' | 'review' | 'qa' | 'pending deploy'
-
-export interface TicketColumnActions {
-    onEdit: (ticket: Ticket) => void;
-    onDelete: (ticket: Ticket) => void;
 }
 
 export const standartRules = [{
@@ -196,8 +203,7 @@ export const addFormItems = [
     ...formItems,
 ]
 
-export type CreatedColumns = TableProps<JsonData['tickets'][number]>['columns']
-
+// functions
 export const createColumns = ({ onEdit, onDelete }: TicketColumnActions): CreatedColumns => [
     {
         title: '#',
@@ -208,6 +214,9 @@ export const createColumns = ({ onEdit, onDelete }: TicketColumnActions): Create
         title: 'ID',
         dataIndex: 'ticketId',
         key: 'ticketId',
+        render: (text: string) => (
+            <Flex>{text} <Copy text={text} /></Flex>
+        )
     },
     {
         title: 'Title',

@@ -4,8 +4,8 @@ import type { FC } from 'react'
 // components
 import { Table } from 'antd'
 // utils + config
-import type { JsonData, Ticket } from '../config'
-import { createColumns, defaultJson } from '../config'
+import type { JsonData, Ticket } from '../../config'
+import { createColumns, defaultJson } from '../../config'
 
 interface JiraTableProps {
     setDirty: (status: string) => void;

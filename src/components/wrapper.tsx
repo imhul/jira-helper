@@ -1,7 +1,7 @@
 import { memo, useState, useEffect } from "react"
 // components
 import { Flex, Checkbox, Layout, Segmented, Button, notification } from 'antd'
-import { JiraTable as Table } from "./table"
+import { JiraTable as Table } from "./table/table"
 import { JiraGrid as Grid } from "./grid"
 import { EditModal } from "./edit-modal"
 import { SatusTag as Tag } from "./tag"
@@ -28,15 +28,17 @@ const Wrapper: React.FC = () => {
     const [status, setStatus] = useState('absent')
     const [isAutosave, setIsAutosave] = useState(false)
     const [isList, setIsList] = useState(true)
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+    const [addModalOpen, setAddModalOpen] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedTicket, setSelectedTicket] = useState<Ticket>(defaultJson.tickets[0])
 
     const getStatusData = () => {
-        return status.length ? dataStatuses[status] : { status: 'default', name: '', icon: null }
+        return status.length
+            ? dataStatuses[status]
+            : { status: 'default', name: '', icon: null }
     }
 
-    const save = async () => {
+    const saveData = async () => {
         setStatus('saving')
         try {
             await saveJson(jsonObj)
@@ -48,7 +50,7 @@ const Wrapper: React.FC = () => {
         }
     }
 
-    const read = async () => {
+    const readData = async () => {
         setStatus('reading')
         try {
             const savedJson = await readJson()
@@ -62,7 +64,7 @@ const Wrapper: React.FC = () => {
         }
     }
 
-    const reload = () => {
+    const reloadApp = () => {
         window.location.reload()
     }
 
@@ -72,12 +74,8 @@ const Wrapper: React.FC = () => {
             ...prev,
             tickets: [...prev.tickets, ticket],
         }))
-        save()
-        setIsAddModalOpen(false)
-    }
-
-    const onAdd = () => {
-        setIsAddModalOpen(true)
+        saveData()
+        setAddModalOpen(false)
     }
 
     const edit = (ticket: Ticket) => {
@@ -86,8 +84,12 @@ const Wrapper: React.FC = () => {
             ...prev,
             tickets: prev.tickets.map((t) => (t.ticketId === ticket.ticketId ? ticket : t)),
         }))
-        save()
+        saveData()
         setModalOpen(false)
+    }
+
+    const onAdd = () => {
+        setAddModalOpen(true)
     }
 
     const onEdit = (ticket: Ticket) => {
@@ -102,19 +104,21 @@ const Wrapper: React.FC = () => {
         }))
     }
 
+    // initialize app
     useEffect(() => {
         async function init() {
             await setDefaultAppSize()
             await centerAppWindow()
-            await read()
+            await readData()
         }
 
         init()
     }, [])
 
+    // Autosave
     useEffect(() => {
         if (isAutosave) {
-            const timeout = setInterval(() => save(), minute)
+            const timeout = setInterval(() => saveData(), minute)
             return () => clearInterval(timeout)
         }
     }, [isAutosave])
@@ -129,14 +133,14 @@ const Wrapper: React.FC = () => {
                 isModalOpen={modalOpen}
                 setIsModalOpen={setModalOpen}
                 ticket={selectedTicket}
-                isAdding={isAddModalOpen}
+                isAdding={addModalOpen}
             />
             <Layout style={layoutStyle}>
                 <Header style={headerStyle}>
                     <Flex gap="small" justify="space-between" align="center">
-                        <Button size="large" type="primary" shape="circle" onClick={reload} icon={<SyncOutlined />} />
-                        <Button size="large" type="primary" shape="circle" onClick={save} icon={<SaveOutlined />} />
-                        <Button size="large" type="primary" shape="circle" onClick={read} icon={<CloudDownloadOutlined />} />
+                        <Button size="large" type="primary" shape="circle" onClick={reloadApp} icon={<SyncOutlined />} />
+                        <Button size="large" type="primary" shape="circle" onClick={saveData} icon={<SaveOutlined />} />
+                        <Button size="large" type="primary" shape="circle" onClick={readData} icon={<CloudDownloadOutlined />} />
                         <Checkbox onChange={(e) => setIsAutosave(e.target.checked)}>Autosave</Checkbox>
                     </Flex>
                     <Flex gap="small" justify="flex-end" align="center">
@@ -158,12 +162,6 @@ const Wrapper: React.FC = () => {
                         ? <Table setDirty={setStatus} data={jsonObj} onEdit={onEdit} onDelete={onDelete} />
                         : <Grid setDirty={setStatus} data={jsonObj} onEdit={onEdit} onDelete={onDelete} />
                     }
-                    {/* <textarea
-                        id="json-input"
-                        className="json-input"
-                        value={jsonText}
-                        onChange={(event) => setJsonText(event.currentTarget.value)}
-                    /> */}
                 </Content>
             </Layout>
         </main>
