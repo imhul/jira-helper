@@ -10,7 +10,8 @@ import type {
 // components
 import { Table } from 'antd'
 // utils + config
-import { createColumns, defaultJson } from '../../config'
+import { defaultJson } from '../../config'
+import createColumns from './columns'
 
 
 export const JiraTable: FC<JiraTableProps> = memo(({

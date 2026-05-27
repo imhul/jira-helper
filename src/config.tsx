@@ -1,11 +1,7 @@
-// components
-import { Button, Popconfirm, Flex, Tag } from 'antd'
-import Copy from './components/copy'
 // icons
 import {
     SyncOutlined,
     EditOutlined,
-    DeleteOutlined,
     CheckCircleOutlined,
     CloseCircleOutlined,
 } from '@ant-design/icons'
@@ -13,10 +9,7 @@ import {
 import type {
     JsonData,
     StatusData,
-    TicketStatus,
     CSSProperties,
-    CreatedColumns,
-    TicketColumnActions,
 } from './types'
 
 
@@ -110,7 +103,8 @@ export const defaultJson: JsonData = {
             gameName: 'gameName',
             additionalInfo: 'additionalInfo',
         }
-    ]
+    ],
+    lastTimeSaved: 0,
 }
 
 export const formItems = [
@@ -173,108 +167,4 @@ export const addFormItems = [
         rules: standartRules,
     },
     ...formItems,
-]
-
-// functions
-export const renderTextCell = (text: string) => (
-    <Flex justify="space-between" align="center">
-        <span>{text}</span> <Copy text={text} />
-    </Flex>
-)
-
-export const createColumns = ({ onEdit, onDelete }: TicketColumnActions): CreatedColumns => [
-    {
-        title: '#',
-        dataIndex: 'order',
-        key: 'order',
-    },
-    {
-        title: 'ID',
-        dataIndex: 'ticketId',
-        key: 'ticketId',
-        // render: (text: string) => renderTextCell(text)
-    },
-    {
-        title: 'Title',
-        dataIndex: 'ticketTitle',
-        key: 'ticketTitle',
-    },
-    {
-        title: 'Branch',
-        dataIndex: 'branchName',
-        key: 'branchName',
-    },
-    {
-        title: 'Push',
-        dataIndex: 'pushCommand',
-        key: 'pushCommand',
-    },
-    {
-        title: 'Commit',
-        dataIndex: 'commitMessage',
-        key: 'commitMessage',
-    },
-    {
-        title: 'Status',
-        dataIndex: 'ticketStatus',
-        key: 'ticketStatus',
-        render: (status: TicketStatus) => {
-            const statusData = dataStatuses[status] || dataStatuses['absent']
-            return (
-                <Tag icon={statusData.icon} color={statusData.status}>
-                    {statusData.name}
-                </Tag>
-            )
-        }
-    },
-    {
-        title: 'Ticket',
-        dataIndex: 'ticketLink',
-        key: 'ticketLink',
-    },
-    {
-        title: 'Git',
-        dataIndex: 'gitLink',
-        key: 'gitLink',
-    },
-    {
-        title: 'PR',
-        dataIndex: 'prLink',
-        key: 'prLink',
-    },
-    {
-        title: 'Game',
-        dataIndex: 'gameName',
-        key: 'gameName',
-    },
-    {
-        title: 'Additional Info',
-        dataIndex: 'additionalInfo',
-        key: 'additionalInfo',
-    },
-    {
-        title: 'Actions',
-        key: 'actions',
-        render: (value, record, index) => {
-            console.info('Rendering actions for record:', {
-                value,
-                record,
-                index,
-            })
-            return (
-                <Flex gap="small">
-                    <Button type="text" icon={<EditOutlined />} onClick={() => onEdit(record)} />
-                    <Popconfirm
-                        title="Delete the ticket"
-                        description="Are you sure to delete this ticket?"
-                        onConfirm={() => onDelete(record)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <Button type="text" icon={<DeleteOutlined />} />
-                    </Popconfirm>
-                </Flex>
-            )
-        },
-    }
 ]

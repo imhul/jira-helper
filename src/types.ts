@@ -26,6 +26,7 @@ export interface Ticket {
 
 export interface JsonData {
     tickets: Ticket[];
+    lastTimeSaved: number;
 }
 
 export interface TicketColumnActions {
@@ -57,6 +58,12 @@ export interface EditModalProps {
     ticket: Ticket;
     order: number;
     isAdding: boolean;
+}
+
+export interface ActionsProps {
+    onEdit: (ticket: Ticket) => void;
+    onDelete: (ticket: Ticket) => void;
+    record: Ticket;
 }
 
 export interface FormValues {

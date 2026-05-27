@@ -2,6 +2,7 @@ import { memo, useState, useEffect } from "react"
 // components
 import { Flex, Checkbox, Layout, Segmented, Button, notification } from 'antd'
 import { JiraTable as Table } from "./table/table"
+import GitCloneCommand from "./git-clone-command"
 import { JiraGrid as Grid } from "./grid"
 import { EditModal } from "./edit-modal"
 import { SatusTag as Tag } from "./tag"
@@ -35,6 +36,7 @@ import {
     contentStyle,
     dataStatuses,
 } from "../config"
+
 
 const { Header, Footer, Content } = Layout
 
@@ -194,7 +196,7 @@ const Wrapper: FC = () => {
                     }
                 </Content>
                 <Footer style={footerStyle}>
-                    footer
+                    <GitCloneCommand />
                 </Footer>
             </Layout>
         </main>
