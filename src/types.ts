@@ -1,6 +1,6 @@
-import type { FC, CSSProperties } from 'react'
+import type { FC, MouseEvent, CSSProperties } from 'react'
 import type { TableProps } from 'antd'
-import { ticketStatuses } from './config'
+import { ticketStatuses, defaultJson } from './config'
 
 // Interfaces
 export interface StatusData {
@@ -38,13 +38,15 @@ export interface JiraTableProps {
     data: JsonData;
     onEdit?: (ticket: Ticket) => void;
     onDelete?: (ticket: Ticket) => void;
+    setText: (text: string) => void;
 }
 
-export interface OnSelectCellParams {
-    ticketId: string;
-    rowIndex: number;
-    value: string;
-    row?: any;
+export interface JiraGridProps {
+    setDirty: (status: string) => void;
+    data: typeof defaultJson;
+    onEdit?: (ticket: Ticket) => void;
+    onDelete?: (ticket: Ticket) => void;
+    setText: (text: string) => void;
 }
 
 export interface EditModalProps {
@@ -71,10 +73,12 @@ export interface FormValues {
 }
 
 // types
+export type CellMouseEvent = MouseEvent<HTMLTableRowElement, MouseEvent>
 export type TicketStatus = 'progress' | 'done' | 'review' | 'qa' | 'pending deploy'
 export type CreatedColumns = TableProps<JsonData['tickets'][number]>['columns']
 export type {
     FC,
+    MouseEvent,
     TableProps,
     CSSProperties
 }

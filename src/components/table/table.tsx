@@ -4,8 +4,8 @@ import type {
     FC,
     Ticket,
     JsonData,
+    MouseEvent,
     JiraTableProps,
-    OnSelectCellParams,
 } from '../../types'
 // components
 import { Table } from 'antd'
@@ -13,7 +13,13 @@ import { Table } from 'antd'
 import { createColumns, defaultJson } from '../../config'
 
 
-export const JiraTable: FC<JiraTableProps> = memo(({ setDirty, data = defaultJson, onEdit, onDelete }) => {
+export const JiraTable: FC<JiraTableProps> = memo(({
+    setDirty,
+    data = defaultJson,
+    setText,
+    onEdit,
+    onDelete,
+}) => {
     console.info('Rendering JiraTable with data: ', data)
 
     const editTicket = (ticket: Ticket) => {
@@ -31,27 +37,15 @@ export const JiraTable: FC<JiraTableProps> = memo(({ setDirty, data = defaultJso
         onDelete: deleteTicket,
     })
 
-    const onSelectCell = (params: OnSelectCellParams) => {
-        console.info('Cell selected: ', params)
-    }
-
-    const onRow = (record: Ticket, rowIndex?: number) => {
-        console.info('onRow called with record: ', {record, columns})
-        return ({
-            onClick: (event: React.MouseEvent<HTMLTableRowElement, MouseEvent>) => {
-                const target = event.target as HTMLElement
-                if (target.classList.contains('ant-table-cell') && columns && target.innerText.length > 0) {
-                    onSelectCell({
-                        rowIndex: rowIndex || 0,
-                        value: target.innerText,
-                        ticketId: record.ticketId,
-                        // row: columns.find(col => col.onCell === target.getAttribute('data-column-key')),
-                    })
-                    // TODO: implement copy logic here!
-                }
+    const onRow = () => ({
+        onClick: (event: MouseEvent) => {
+            const target = event.target as HTMLElement
+            if (target.classList.contains('ant-table-cell') && target.innerText.length > 0) {
+                setText(target.innerText)
+                // TODO: replace it to header in button form with tooltip
             }
-        })
-    }
+        }
+    })
 
     return (
         <Table<JsonData['tickets'][number]>

@@ -6,6 +6,7 @@ import { JiraGrid as Grid } from "./grid"
 import { EditModal } from "./edit-modal"
 import { SatusTag as Tag } from "./tag"
 import Counter from "./counter"
+import Copy from "./copy"
 import {
     SaveOutlined,
     CloudDownloadOutlined,
@@ -46,6 +47,7 @@ const Wrapper: FC = () => {
     const [addModalOpen, setAddModalOpen] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedTicket, setSelectedTicket] = useState<Ticket>(defaultJson.tickets[0])
+    const [selectedCellText, setSelectedCellText] = useState<string>('')
 
     const getStatusData = () => {
         return status.length
@@ -159,6 +161,7 @@ const Wrapper: FC = () => {
                         <Checkbox onChange={(e) => setIsAutosave(e.target.checked)}>Autosave</Checkbox>
                     </Flex>
                     <Flex gap="small" justify="flex-end" align="center">
+                        {selectedCellText.length > 0 && <Copy text={selectedCellText} />}
                         <Button size="large" type="primary" shape="circle" onClick={onAdd} icon={<PlusCircleOutlined />} />
                         <Segmented
                             size="large"
@@ -174,8 +177,20 @@ const Wrapper: FC = () => {
                 </Header>
                 <Content style={contentStyle}>
                     {isList
-                        ? <Table setDirty={setStatus} data={jsonObj} onEdit={onEdit} onDelete={onDelete} />
-                        : <Grid setDirty={setStatus} data={jsonObj} onEdit={onEdit} onDelete={onDelete} />
+                        ? <Table
+                            setDirty={setStatus}
+                            data={jsonObj}
+                            onEdit={onEdit}
+                            onDelete={onDelete}
+                            setText={setSelectedCellText}
+                        />
+                        : <Grid
+                            setDirty={setStatus}
+                            data={jsonObj}
+                            onEdit={onEdit}
+                            onDelete={onDelete}
+                            setText={setSelectedCellText}
+                        />
                     }
                 </Content>
                 <Footer style={footerStyle}>
