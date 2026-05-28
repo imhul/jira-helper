@@ -1,9 +1,10 @@
+import { useEffect } from 'react'
 // components
 import { Modal, Flex, Form, Input, Select } from 'antd'
 // types
 import type { FC, FormValues, EditModalProps } from '../types'
 // utils + config
-import { getFormattedData } from '../utils'
+import { getDefaultJson, getFormattedData } from '../utils'
 import {
     formItems,
     defaultJson,
@@ -33,6 +34,21 @@ export const EditModal: FC<EditModalProps> = ({
     const modalColumns = isAdding
         ? [addLeftColumnItems, addRightColumnItems]
         : [editLeftColumnItems, editRightColumnItems]
+    const initialFormValues = isAdding ? { ...getDefaultJson(order).tickets[0] } : { ...ticket }
+    const formKey = isAdding ? `add-${order}` : `edit-${ticket.ticketId}`
+
+    const hydrateForm = () => {
+        form.resetFields()
+        form.setFieldsValue(initialFormValues)
+    }
+
+    useEffect(() => {
+        if (!isModalOpen) {
+            return
+        }
+
+        hydrateForm()
+    }, [form, initialFormValues, isModalOpen])
 
     const syncFormattedFields = async () => {
         const requiredFieldNames = (isAdding ? addFormItems : formItems)
@@ -47,12 +63,14 @@ export const EditModal: FC<EditModalProps> = ({
             const values = await form.validateFields(requiredFieldNames, {
                 validateOnly: true,
             }) as { ticketId?: string, ticketTitle?: string }
+            const ticketId = values.ticketId ?? form.getFieldValue('ticketId')
+            const ticketTitle = values.ticketTitle ?? form.getFieldValue('ticketTitle')
 
-            if (!values.ticketId || !values.ticketTitle) {
+            if (!ticketId || !ticketTitle) {
                 return
             }
 
-            form.setFieldsValue(getFormattedData(values.ticketTitle, values.ticketId))
+            form.setFieldsValue(getFormattedData(ticketTitle, ticketId))
         } catch {
             console.warn('Required fields are not valid yet, skipping formatted data sync.')
         }
@@ -67,7 +85,7 @@ export const EditModal: FC<EditModalProps> = ({
             )
 
             if (isAdding) {
-                add({ ...defaultJson.tickets[0], ...definedValues })
+                add({ ...getDefaultJson(order).tickets[0], ...definedValues })
             } else {
                 edit({ ...ticket, ...definedValues })
             }
@@ -81,10 +99,16 @@ export const EditModal: FC<EditModalProps> = ({
 
     return (
         <Modal
+            key={formKey}
             title={isAdding ? `Create Ticket #${order}` : `Edit Ticket: ${ticket.ticketId}`}
             closable={{ 'aria-label': 'Close' }}
             open={isModalOpen}
             onCancel={cancel}
+            afterOpenChange={(open) => {
+                if (open) {
+                    hydrateForm()
+                }
+            }}
             okText={isAdding ? 'Create' : 'Save'}
             cancelText="Cancel"
             centered
@@ -100,12 +124,17 @@ export const EditModal: FC<EditModalProps> = ({
             }}
             modalRender={(dom) => (
                 <Form
+                    key={formKey}
                     layout="horizontal"
                     form={form}
                     name="ticket-editor"
-                    initialValues={isAdding ? { ...defaultJson.tickets[0] } : { ...ticket }}
+                    initialValues={initialFormValues}
                     clearOnDestroy
-                    onValuesChange={syncFormattedFields}
+                    onValuesChange={(changedValues) => {
+                        if ('ticketId' in changedValues || 'ticketTitle' in changedValues) {
+                            void syncFormattedFields()
+                        }
+                    }}
                     onFinish={ok}
                 >
                     {dom}

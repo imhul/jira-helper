@@ -1,14 +1,18 @@
 // icons
 import {
+    EyeTwoTone,
+    EditTwoTone,
     SyncOutlined,
     EditOutlined,
     CheckCircleOutlined,
     CloseCircleOutlined,
+    CheckCircleTwoTone,
 } from '@ant-design/icons'
 // types
 import type {
     JsonData,
     StatusData,
+    TicketStatus,
     CSSProperties,
 } from './types'
 
@@ -25,6 +29,7 @@ export enum ticketStatuses {
 export const colorPrimary = "#9ccc65"
 export const colorDanger = "#ff3d00"
 export const colorBlue = "#1890ff"
+export const colorSuccess = "#22cc00"
 export const transparent = 'rgba(0, 0, 0, 0)'
 export const minute = 60 * 1000
 export const statusOptions = Object.entries(ticketStatuses).map(([value, label]) => ({ value, label }))
@@ -68,6 +73,14 @@ export const layoutStyle: CSSProperties = {
     borderRadius: 0,
     overflow: 'hidden',
     width: '100%',
+}
+
+export const ticketStatusIcons: Record<TicketStatus, React.ReactNode> = {
+    progress: <EditTwoTone />,
+    done: <CheckCircleTwoTone color={colorSuccess} />,
+    review: <EyeTwoTone color={colorSuccess} />,
+    qa: <EyeTwoTone />,
+    deploy: <SyncOutlined />,
 }
 
 export const dataStatuses: Record<string, StatusData> = {

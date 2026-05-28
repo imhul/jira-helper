@@ -8,10 +8,12 @@
     "email": "blashirk@gmail.com"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri"
+    "dev-web": "vite",
+    "build-web": "tsc && vite build",
+    "preview-web": "vite preview",
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build"
   },
   "dependencies": {
     "@ant-design/icons": "^6.2.3",

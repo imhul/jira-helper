@@ -15,7 +15,7 @@ import type {
     TicketColumnActions,
 } from '../../types'
 // utils + config
-import { dataStatuses, colorBlue, colorDanger } from '../../config'
+import { ticketStatusIcons, colorBlue, colorDanger } from '../../config'
 
 const Actions = ({ onEdit, onDelete, onToggleLock, record }: ActionsProps) => {
     return (
@@ -113,10 +113,7 @@ const createColumns = ({ onEdit, onDelete, onToggleLock, onSelectCell, selectedC
             key: 'ticketStatus',
             onCell: () => ({ style: { verticalAlign: 'top' } }),
             width: 40,
-            render: (status: TicketStatus) => {
-                const statusData = dataStatuses[status] || dataStatuses['absent']
-                return statusData.icon
-            }
+            render: (status: TicketStatus) => ticketStatusIcons[status],
         },
         {
             title: 'Ticket',

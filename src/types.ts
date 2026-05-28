@@ -98,7 +98,7 @@ export interface FormValues {
 
 // types
 export type CellMouseEvent = MouseEvent<HTMLTableRowElement, MouseEvent>
-export type TicketStatus = 'progress' | 'done' | 'review' | 'qa' | 'pending deploy'
+export type TicketStatus = 'progress' | 'done' | 'review' | 'qa' | 'deploy'
 export type CreatedColumns = TableProps<JsonData['tickets'][number]>['columns']
 export type {
     FC,
