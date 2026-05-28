@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react"
 import { Button, Popover } from "antd"
-import { CopyOutlined } from '@ant-design/icons'
+import { CopyOutlined } from "@ant-design/icons"
 
 const Copy = ({ text }: { text: string }) => {
     const [open, setOpen] = useState(true)

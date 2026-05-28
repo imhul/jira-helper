@@ -1,4 +1,3 @@
-
 # Jira Helper
 
 ## Tauri + React + Typescript

@@ -1,17 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect } from "react"
 // components
-import { Modal, Flex, Form, Input, Select } from 'antd'
+import { Modal, Flex, Form, Input, Select } from "antd"
 // types
-import type { FC, FormValues, EditModalProps } from '../types'
+import type { FC, FormValues, EditModalProps } from "../types"
 // utils + config
-import { getDefaultJson, getFormattedData } from '../utils'
-import {
-    formItems,
-    defaultJson,
-    addFormItems,
-    statusOptions,
-} from '../config'
-
+import { getDefaultJson, getFormattedData } from "../utils"
+import { formItems, addFormItems, statusOptions } from "../config"
 
 const FormItem = Form.Item
 const midpoint = Math.ceil(formItems.length / 2)
@@ -34,7 +28,9 @@ export const EditModal: FC<EditModalProps> = ({
     const modalColumns = isAdding
         ? [addLeftColumnItems, addRightColumnItems]
         : [editLeftColumnItems, editRightColumnItems]
-    const initialFormValues = isAdding ? { ...getDefaultJson(order).tickets[0] } : { ...ticket }
+    const initialFormValues = isAdding
+        ? { ...getDefaultJson(order).tickets[0] }
+        : { ...ticket }
     const formKey = isAdding ? `add-${order}` : `edit-${ticket.ticketId}`
 
     const hydrateForm = () => {
@@ -60,11 +56,12 @@ export const EditModal: FC<EditModalProps> = ({
         }
 
         try {
-            const values = await form.validateFields(requiredFieldNames, {
+            const values = (await form.validateFields(requiredFieldNames, {
                 validateOnly: true,
-            }) as { ticketId?: string, ticketTitle?: string }
-            const ticketId = values.ticketId ?? form.getFieldValue('ticketId')
-            const ticketTitle = values.ticketTitle ?? form.getFieldValue('ticketTitle')
+            })) as { ticketId?: string; ticketTitle?: string }
+            const ticketId = values.ticketId ?? form.getFieldValue("ticketId")
+            const ticketTitle =
+                values.ticketTitle ?? form.getFieldValue("ticketTitle")
 
             if (!ticketId || !ticketTitle) {
                 return
@@ -72,16 +69,18 @@ export const EditModal: FC<EditModalProps> = ({
 
             form.setFieldsValue(getFormattedData(ticketTitle, ticketId))
         } catch {
-            console.warn('Required fields are not valid yet, skipping formatted data sync.')
+            console.warn(
+                "Required fields are not valid yet, skipping formatted data sync."
+            )
         }
     }
 
     const ok = (formValues: FormValues) => {
-        if (Object.values(formValues).some(value => value !== undefined)) {
+        if (Object.values(formValues).some((value) => value !== undefined)) {
             const definedValues = Object.fromEntries(
-                Object
-                    .entries(formValues)
-                    .filter(([_, value]) => value !== undefined)
+                Object.entries(formValues).filter(
+                    ([_, value]) => value !== undefined
+                )
             )
 
             if (isAdding) {
@@ -100,8 +99,12 @@ export const EditModal: FC<EditModalProps> = ({
     return (
         <Modal
             key={formKey}
-            title={isAdding ? `Create Ticket #${order}` : `Edit Ticket: ${ticket.ticketId}`}
-            closable={{ 'aria-label': 'Close' }}
+            title={
+                isAdding
+                    ? `Create Ticket #${order}`
+                    : `Edit Ticket: ${ticket.ticketId}`
+            }
+            closable={{ "aria-label": "Close" }}
             open={isModalOpen}
             onCancel={cancel}
             afterOpenChange={(open) => {
@@ -109,18 +112,18 @@ export const EditModal: FC<EditModalProps> = ({
                     hydrateForm()
                 }
             }}
-            okText={isAdding ? 'Create' : 'Save'}
+            okText={isAdding ? "Create" : "Save"}
             cancelText="Cancel"
             centered
             destroyOnHidden
-            okButtonProps={{ autoFocus: true, htmlType: 'submit' }}
+            okButtonProps={{ autoFocus: true, htmlType: "submit" }}
             width={{
-                xs: '90%',
-                sm: '80%',
-                md: '70%',
-                lg: '60%',
-                xl: '50%',
-                xxl: '40%',
+                xs: "90%",
+                sm: "80%",
+                md: "70%",
+                lg: "60%",
+                xl: "50%",
+                xxl: "40%",
             }}
             modalRender={(dom) => (
                 <Form
@@ -131,7 +134,10 @@ export const EditModal: FC<EditModalProps> = ({
                     initialValues={initialFormValues}
                     clearOnDestroy
                     onValuesChange={(changedValues) => {
-                        if ('ticketId' in changedValues || 'ticketTitle' in changedValues) {
+                        if (
+                            "ticketId" in changedValues ||
+                            "ticketTitle" in changedValues
+                        ) {
                             void syncFormattedFields()
                         }
                     }}
@@ -158,19 +164,15 @@ export const EditModal: FC<EditModalProps> = ({
                                 style={{ marginBottom: 0 }}
                                 validateTrigger="onBlur"
                             >
-                                {item.rules.length > 0
-                                    ? (
-                                        <Input
-                                            type="text"
-                                            allowClear
-                                            readOnly={item.readonly}
-                                        />
-                                    )
-                                    : (
-                                        <Select
-                                            options={statusOptions}
-                                        />
-                                    )}
+                                {item.rules.length > 0 ? (
+                                    <Input
+                                        type="text"
+                                        allowClear
+                                        readOnly={item.readonly}
+                                    />
+                                ) : (
+                                    <Select options={statusOptions} />
+                                )}
                             </FormItem>
                         ))}
                     </Flex>

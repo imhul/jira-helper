@@ -1,7 +1,15 @@
 import { memo, useState, useEffect } from "react"
-import packageJson from '../../package.json'
+import packageJson from "../../package.json"
 // components
-import { Flex, Checkbox, Layout, Segmented, Button, notification, Card } from 'antd'
+import {
+    Flex,
+    Checkbox,
+    Layout,
+    Segmented,
+    Button,
+    notification,
+    Card,
+} from "antd"
 import { JiraTable as Table } from "./table/table"
 import GitCloneCommand from "./git-clone-command"
 import { JiraGrid as Grid } from "./grid"
@@ -16,9 +24,9 @@ import {
     AppstoreOutlined,
     BarsOutlined,
     PlusCircleOutlined,
-} from '@ant-design/icons'
+} from "@ant-design/icons"
 // types
-import type { FC, Ticket } from '../types'
+import type { FC, Ticket } from "../types"
 // utils + config
 import {
     notify,
@@ -39,28 +47,29 @@ import {
     colorPrimary,
 } from "../config"
 
-
 const { Header, Footer, Content } = Layout
 const { version } = packageJson
 
 const Wrapper: FC = () => {
     const [api, contextHolder] = notification.useNotification()
     const [jsonObj, setJsonObj] = useState(defaultJson)
-    const [status, setStatus] = useState('absent')
+    const [status, setStatus] = useState("absent")
     const [isList, setIsList] = useState(true)
     const [addModalOpen, setAddModalOpen] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
-    const [selectedTicket, setSelectedTicket] = useState<Ticket>(defaultJson.tickets[0])
-    const [selectedCellText, setSelectedCellText] = useState<string>('')
+    const [selectedTicket, setSelectedTicket] = useState<Ticket>(
+        defaultJson.tickets[0]
+    )
+    const [selectedCellText, setSelectedCellText] = useState<string>("")
 
     const getStatusData = () => {
         return status.length
             ? dataStatuses[status]
-            : { status: 'default', name: '', icon: null }
+            : { status: "default", name: "", icon: null }
     }
 
     const saveData = async (dataToSave = jsonObj) => {
-        setStatus('saving')
+        setStatus("saving")
         const nextData = {
             ...dataToSave,
             lastTimeSaved: Date.now(),
@@ -68,16 +77,21 @@ const Wrapper: FC = () => {
         try {
             setJsonObj(nextData)
             await saveJson(nextData)
-            setStatus('saved')
+            setStatus("saved")
             // notify('success', 'Success!', 'Data is successfully saved!', api)
         } catch (error) {
-            setStatus('savingError')
-            notify('error', "Error: JSON is not saved!", getErrorText(error), api)
+            setStatus("savingError")
+            notify(
+                "error",
+                "Error: JSON is not saved!",
+                getErrorText(error),
+                api
+            )
         }
     }
 
     const readData = async () => {
-        setStatus('reading')
+        setStatus("reading")
         try {
             const savedJson = await readJson<typeof defaultJson>()
             setJsonObj({
@@ -88,11 +102,16 @@ const Wrapper: FC = () => {
                     locked: ticket.locked ?? false,
                 })),
             })
-            setStatus('readed')
+            setStatus("readed")
             // notify('success', 'Success!', 'Data is successfully loaded!', api)
         } catch (error) {
-            setStatus('readingError')
-            notify('error', "Error: JSON is not readed!", getErrorText(error), api)
+            setStatus("readingError")
+            notify(
+                "error",
+                "Error: JSON is not readed!",
+                getErrorText(error),
+                api
+            )
         }
     }
 
@@ -114,7 +133,9 @@ const Wrapper: FC = () => {
     const edit = (ticket: Ticket) => {
         const nextData = {
             ...jsonObj,
-            tickets: jsonObj.tickets.map((t) => (t.ticketId === ticket.ticketId ? ticket : t)),
+            tickets: jsonObj.tickets.map((t) =>
+                t.ticketId === ticket.ticketId ? ticket : t
+            ),
         }
 
         setJsonObj(nextData)
@@ -143,7 +164,9 @@ const Wrapper: FC = () => {
     const onDelete = (ticketToDelete: Ticket) => {
         const nextData = {
             ...jsonObj,
-            tickets: jsonObj.tickets.filter((ticket) => ticket.ticketId !== ticketToDelete.ticketId),
+            tickets: jsonObj.tickets.filter(
+                (ticket) => ticket.ticketId !== ticketToDelete.ticketId
+            ),
         }
 
         setJsonObj(nextData)
@@ -153,11 +176,11 @@ const Wrapper: FC = () => {
     const onToggleLock = (ticketToToggle: Ticket) => {
         const nextData = {
             ...jsonObj,
-            tickets: jsonObj.tickets.map((ticket) => (
+            tickets: jsonObj.tickets.map((ticket) =>
                 ticket.ticketId === ticketToToggle.ticketId
                     ? { ...ticket, locked: !ticket.locked }
                     : ticket
-            )),
+            ),
         }
 
         setJsonObj(nextData)
@@ -214,34 +237,71 @@ const Wrapper: FC = () => {
             <Layout style={layoutStyle}>
                 <Header style={headerStyle}>
                     <Flex gap="middle" justify="space-between" align="center">
-                        <Button size="large" type="primary" shape="circle" onClick={reloadApp} icon={<SyncOutlined />} />
-                        <Button size="large" type="primary" shape="circle" onClick={() => saveData()} icon={<SaveOutlined />} />
-                        <Button size="large" type="primary" shape="circle" onClick={readData} icon={<CloudDownloadOutlined />} />
+                        <Button
+                            size="large"
+                            type="primary"
+                            shape="circle"
+                            onClick={reloadApp}
+                            icon={<SyncOutlined />}
+                        />
+                        <Button
+                            size="large"
+                            type="primary"
+                            shape="circle"
+                            onClick={() => saveData()}
+                            icon={<SaveOutlined />}
+                        />
+                        <Button
+                            size="large"
+                            type="primary"
+                            shape="circle"
+                            onClick={readData}
+                            icon={<CloudDownloadOutlined />}
+                        />
                         <Card>
-                            <Checkbox checked={jsonObj.autosave} onChange={(e) => onToggleAutosave(e.target.checked)}>Autosave</Checkbox>
+                            <Checkbox
+                                checked={jsonObj.autosave}
+                                onChange={(e) =>
+                                    onToggleAutosave(e.target.checked)
+                                }
+                            >
+                                Autosave
+                            </Checkbox>
                         </Card>
                     </Flex>
                     <h1 style={{ margin: 0, color: colorPrimary }}>
-                        Jira Helper <small style={{ fontSize: '0.5em' }}>v{version}</small>
+                        Jira Helper{" "}
+                        <small style={{ fontSize: "0.5em" }}>v{version}</small>
                     </h1>
                     <Flex gap="middle" justify="flex-end" align="center">
-                        {selectedCellText.length > 0 && <Copy text={selectedCellText} />}
-                        <Button size="large" type="primary" shape="circle" onClick={onAdd} icon={<PlusCircleOutlined />} />
+                        {selectedCellText.length > 0 && (
+                            <Copy text={selectedCellText} />
+                        )}
+                        <Button
+                            size="large"
+                            type="primary"
+                            shape="circle"
+                            onClick={onAdd}
+                            icon={<PlusCircleOutlined />}
+                        />
                         <Segmented
                             size="large"
-                            onChange={(value) => setIsList(value === 'List')}
+                            onChange={(value) => setIsList(value === "List")}
                             options={[
-                                { value: 'List', icon: <BarsOutlined /> },
-                                { value: 'Grid', icon: <AppstoreOutlined /> },
+                                { value: "List", icon: <BarsOutlined /> },
+                                { value: "Grid", icon: <AppstoreOutlined /> },
                             ]}
                         />
                         <Counter num={jsonObj.tickets.length} />
-                        <Tag data={getStatusData()} lastTimeSaved={jsonObj.lastTimeSaved} />
+                        <Tag
+                            data={getStatusData()}
+                            lastTimeSaved={jsonObj.lastTimeSaved}
+                        />
                     </Flex>
                 </Header>
                 <Content style={contentStyle}>
-                    {isList
-                        ? <Table
+                    {isList ? (
+                        <Table
                             setDirty={setStatus}
                             data={jsonObj}
                             onEdit={onEdit}
@@ -249,14 +309,15 @@ const Wrapper: FC = () => {
                             onToggleLock={onToggleLock}
                             setText={setSelectedCellText}
                         />
-                        : <Grid
+                    ) : (
+                        <Grid
                             setDirty={setStatus}
                             data={jsonObj}
                             onEdit={onEdit}
                             onDelete={onDelete}
                             setText={setSelectedCellText}
                         />
-                    }
+                    )}
                 </Content>
                 <Footer style={footerStyle}>
                     <GitCloneCommand />

@@ -1,12 +1,12 @@
-import { memo } from 'react'
+import { memo } from "react"
 // types
-import type { FC, JiraGridProps } from '../types'
+import type { FC, JiraGridProps } from "../types"
 
 export const JiraGrid: FC<JiraGridProps> = memo(({ setDirty, data }) => {
-    console.info('Rendering JiraGrid with data: ', data)
+    console.info("Rendering JiraGrid with data: ", data)
 
     return (
-        <div className="grid-container" onClick={() => setDirty('dirty')}>
+        <div className="grid-container" onClick={() => setDirty("dirty")}>
             <div className="grid-item">1</div>
             <div className="grid-item">2</div>
             <div className="grid-item">3</div>

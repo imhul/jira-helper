@@ -1,17 +1,17 @@
 // components
-import { Tag } from 'antd'
+import { Tag } from "antd"
 // types
-import type { TagProps } from 'antd'
+import type { TagProps } from "antd"
 // utils + config
-import { colorPrimary } from '../config'
+import { colorPrimary } from "../config"
 
 const Counter = ({ num }: { num: number }) => {
-    const styles: TagProps['styles'] = {
+    const styles: TagProps["styles"] = {
         root: {
-            padding: '8px 12px',
+            padding: "8px 12px",
             // backgroundColor: colorPrimary,
             // borderColor: colorPrimary,
-        }
+        },
     }
 
     return (

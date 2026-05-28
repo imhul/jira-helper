@@ -1,7 +1,11 @@
 import { notify } from "./notify"
 import { getDefaultJson, readJson, saveJson } from "./json"
 import { getFormattedData } from "./text"
-import { centerAppWindow, getDeviceScreenSize, setDefaultAppSize } from "./screen-size"
+import {
+    centerAppWindow,
+    getDeviceScreenSize,
+    setDefaultAppSize,
+} from "./screen-size"
 import { getErrorText } from "./error"
 
 export {

@@ -1,3 +1,3 @@
-import { JiraTable } from './table'
+import { JiraTable } from "./table"
 
 export { JiraTable }
