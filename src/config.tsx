@@ -103,13 +103,16 @@ export const defaultJson: JsonData = {
             prLink: 'prLink',
             gameName: 'gameName',
             additionalInfo: 'additionalInfo',
+            locked: false,
         }
     ],
     lastTimeSaved: 0,
+    autosave: false,
 }
 
 export const formItems = [
     {
+    autosave: false,
         label: 'Ticket Title',
         name: 'ticketTitle',
         rules: [

@@ -1,4 +1,5 @@
 import { memo, useState, useEffect } from "react"
+import packageJson from '../../package.json'
 // components
 import { Flex, Checkbox, Layout, Segmented, Button, notification, Card } from 'antd'
 import { JiraTable as Table } from "./table/table"
@@ -35,16 +36,17 @@ import {
     defaultJson,
     contentStyle,
     dataStatuses,
+    colorPrimary,
 } from "../config"
 
 
 const { Header, Footer, Content } = Layout
+const { version } = packageJson
 
 const Wrapper: FC = () => {
     const [api, contextHolder] = notification.useNotification()
     const [jsonObj, setJsonObj] = useState(defaultJson)
     const [status, setStatus] = useState('absent')
-    const [isAutosave, setIsAutosave] = useState(false)
     const [isList, setIsList] = useState(true)
     const [addModalOpen, setAddModalOpen] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
@@ -77,8 +79,15 @@ const Wrapper: FC = () => {
     const readData = async () => {
         setStatus('reading')
         try {
-            const savedJson = await readJson()
-            setJsonObj(savedJson as typeof defaultJson)
+            const savedJson = await readJson<typeof defaultJson>()
+            setJsonObj({
+                ...savedJson,
+                autosave: savedJson.autosave ?? false,
+                tickets: savedJson.tickets.map((ticket) => ({
+                    ...ticket,
+                    locked: ticket.locked ?? false,
+                })),
+            })
             setStatus('readed')
             // notify('success', 'Success!', 'Data is successfully loaded!', api)
         } catch (error) {
@@ -141,6 +150,30 @@ const Wrapper: FC = () => {
         saveData(nextData)
     }
 
+    const onToggleLock = (ticketToToggle: Ticket) => {
+        const nextData = {
+            ...jsonObj,
+            tickets: jsonObj.tickets.map((ticket) => (
+                ticket.ticketId === ticketToToggle.ticketId
+                    ? { ...ticket, locked: !ticket.locked }
+                    : ticket
+            )),
+        }
+
+        setJsonObj(nextData)
+        saveData(nextData)
+    }
+
+    const onToggleAutosave = (enabled: boolean) => {
+        const nextData = {
+            ...jsonObj,
+            autosave: enabled,
+        }
+
+        setJsonObj(nextData)
+        saveData(nextData)
+    }
+
     // initialize app
     useEffect(() => {
         async function init() {
@@ -154,11 +187,11 @@ const Wrapper: FC = () => {
 
     // Autosave
     useEffect(() => {
-        if (isAutosave) {
+        if (jsonObj.autosave) {
             const timeout = setInterval(() => saveData(), minute)
             return () => clearInterval(timeout)
         }
-    }, [isAutosave])
+    }, [jsonObj.autosave])
 
     useEffect(() => {
         if (addModalOpen) {
@@ -185,9 +218,12 @@ const Wrapper: FC = () => {
                         <Button size="large" type="primary" shape="circle" onClick={() => saveData()} icon={<SaveOutlined />} />
                         <Button size="large" type="primary" shape="circle" onClick={readData} icon={<CloudDownloadOutlined />} />
                         <Card>
-                            <Checkbox onChange={(e) => setIsAutosave(e.target.checked)}>Autosave</Checkbox>
+                            <Checkbox checked={jsonObj.autosave} onChange={(e) => onToggleAutosave(e.target.checked)}>Autosave</Checkbox>
                         </Card>
                     </Flex>
+                    <h1 style={{ margin: 0, color: colorPrimary }}>
+                        Jira Helper <small style={{ fontSize: '0.5em' }}>v{version}</small>
+                    </h1>
                     <Flex gap="middle" justify="flex-end" align="center">
                         {selectedCellText.length > 0 && <Copy text={selectedCellText} />}
                         <Button size="large" type="primary" shape="circle" onClick={onAdd} icon={<PlusCircleOutlined />} />
@@ -210,6 +246,7 @@ const Wrapper: FC = () => {
                             data={jsonObj}
                             onEdit={onEdit}
                             onDelete={onDelete}
+                            onToggleLock={onToggleLock}
                             setText={setSelectedCellText}
                         />
                         : <Grid

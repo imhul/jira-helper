@@ -19,10 +19,9 @@ export const JiraTable: FC<JiraTableProps> = memo(({
     setText,
     onEdit,
     onDelete,
+    onToggleLock,
 }) => {
     const [selectedCellKey, setSelectedCellKey] = useState<string | null>(null)
-
-    // TODO: налаштувати ширину стовбців!
 
     useEffect(() => {
         if (!selectedCellKey) {
@@ -55,6 +54,11 @@ export const JiraTable: FC<JiraTableProps> = memo(({
         onDelete?.(ticket)
     }
 
+    const toggleLockTicket = (ticket: Ticket) => {
+        setDirty('dirty')
+        onToggleLock?.(ticket)
+    }
+
     const selectCell = (cellKey: string, text: string) => {
         setSelectedCellKey(cellKey)
         setText(text)
@@ -63,6 +67,7 @@ export const JiraTable: FC<JiraTableProps> = memo(({
     const columns = createColumns({
         onEdit: editTicket,
         onDelete: deleteTicket,
+        onToggleLock: toggleLockTicket,
         onSelectCell: selectCell,
         selectedCellKey,
     })

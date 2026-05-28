@@ -1,4 +1,3 @@
-import { useState } from 'react'
 // components
 import { Button, Popconfirm, Flex } from 'antd'
 // icons
@@ -18,17 +17,15 @@ import type {
 // utils + config
 import { dataStatuses, colorBlue, colorDanger } from '../../config'
 
-const Actions = ({ onEdit, onDelete, record }: ActionsProps) => {
-    const [locked, setLocked] = useState(false)
-
+const Actions = ({ onEdit, onDelete, onToggleLock, record }: ActionsProps) => {
     return (
         <Flex gap="small" align="center" justify="center">
             <Button
                 type="text"
-                icon={locked ? <UnlockOutlined /> : <LockOutlined />}
-                onClick={() => setLocked((prev) => !prev)}
+                icon={record.locked ? <UnlockOutlined /> : <LockOutlined />}
+                onClick={() => onToggleLock(record)}
             />
-            {!locked && (<>
+            {!record.locked && (<>
                 <Button
                     type="text"
                     icon={<EditOutlined style={{
@@ -50,7 +47,7 @@ const Actions = ({ onEdit, onDelete, record }: ActionsProps) => {
     )
 }
 
-const createColumns = ({ onEdit, onDelete, onSelectCell, selectedCellKey }: TicketColumnActions): CreatedColumns => {
+const createColumns = ({ onEdit, onDelete, onToggleLock, onSelectCell, selectedCellKey }: TicketColumnActions): CreatedColumns => {
     const createSelectableCell = (columnKey: string) => (record: ActionsProps['record']) => ({
         'data-jira-cell-key': `${record.ticketId}:${columnKey}`,
         className: selectedCellKey === `${record.ticketId}:${columnKey}` ? 'jira-table-selected-cell' : '',
@@ -160,7 +157,7 @@ const createColumns = ({ onEdit, onDelete, onSelectCell, selectedCellKey }: Tick
             key: 'actions',
             onCell: () => ({ style: { verticalAlign: 'top' } }),
             render: (_, record) => {
-                return (<Actions onEdit={onEdit} onDelete={onDelete} record={record} />)
+                return (<Actions onEdit={onEdit} onDelete={onDelete} onToggleLock={onToggleLock} record={record} />)
             },
         }
     ]

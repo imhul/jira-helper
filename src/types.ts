@@ -31,16 +31,19 @@ export interface Ticket {
     prLink: string;
     gameName: string;
     additionalInfo: string;
+    locked: boolean;
 }
 
 export interface JsonData {
     tickets: Ticket[];
     lastTimeSaved: number;
+    autosave: boolean;
 }
 
 export interface TicketColumnActions {
     onEdit: (ticket: Ticket) => void;
     onDelete: (ticket: Ticket) => void;
+    onToggleLock: (ticket: Ticket) => void;
     onSelectCell: (cellKey: string, text: string) => void;
     selectedCellKey: string | null;
 }
@@ -50,6 +53,7 @@ export interface JiraTableProps {
     data: JsonData;
     onEdit?: (ticket: Ticket) => void;
     onDelete?: (ticket: Ticket) => void;
+    onToggleLock?: (ticket: Ticket) => void;
     setText: (text: string) => void;
 }
 
@@ -74,6 +78,7 @@ export interface EditModalProps {
 export interface ActionsProps {
     onEdit: (ticket: Ticket) => void;
     onDelete: (ticket: Ticket) => void;
+    onToggleLock: (ticket: Ticket) => void;
     record: Ticket;
 }
 
