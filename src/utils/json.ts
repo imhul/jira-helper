@@ -2,7 +2,7 @@ import { invoke } from "@tauri-apps/api/core"
 // config
 import { defaultJson } from "../config"
 // types
-import type { JsonData } from "../types"
+import type { JsonData, Ticket } from "../types"
 
 export async function saveJson(data: JsonData): Promise<void> {
     await invoke("save_file_json", { data })
@@ -17,4 +17,8 @@ export const getDefaultJson = (order: number) => {
         ...defaultJson,
         tickets: defaultJson.tickets.map((ticket) => ({ ...ticket, order })),
     }
+}
+
+export const sortTicketsByOrder = (tickets: Ticket[]) => {
+    return [...tickets].sort((left, right) => left.order - right.order)
 }

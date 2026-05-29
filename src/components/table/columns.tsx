@@ -1,3 +1,4 @@
+import { Tooltip } from "antd"
 // types
 import type {
     TicketStatus,
@@ -7,6 +8,20 @@ import type {
 // utils + config
 import { ticketStatusIcons } from "../../config"
 import Actions from "./actions"
+
+const renderTextCell = (value: unknown) => {
+    if (typeof value !== "string" && typeof value !== "number") {
+        return value
+    }
+
+    const text = String(value)
+
+    return (
+        <Tooltip title={text}>
+            <span className="jira-table-cell-text">{text}</span>
+        </Tooltip>
+    )
+}
 
 const createColumns = ({
     onEdit,
@@ -27,7 +42,9 @@ const createColumns = ({
                 if (cell.innerText.length > 0) {
                     onSelectCell(
                         `${record.ticketId}:${columnKey}`,
-                        cell.innerText
+                        cell.innerText,
+                        event.currentTarget.getBoundingClientRect().right,
+                        event.currentTarget.getBoundingClientRect().top,
                     )
                 }
             },
@@ -42,6 +59,7 @@ const createColumns = ({
             dataIndex: "order",
             key: "order",
             onCell: createSelectableCell("order"),
+            render: renderTextCell,
             width: 40,
         },
         {
@@ -50,6 +68,7 @@ const createColumns = ({
             key: "ticketId",
             onCell: createSelectableCell("ticketId"),
             filterSearch: true,
+            render: renderTextCell,
             width: 130,
         },
         {
@@ -58,6 +77,7 @@ const createColumns = ({
             key: "ticketTitle",
             onCell: createSelectableCell("ticketTitle"),
             filterSearch: true,
+            render: renderTextCell,
             width: 130,
         },
         {
@@ -65,6 +85,7 @@ const createColumns = ({
             dataIndex: "branchName",
             key: "branchName",
             onCell: createSelectableCell("branchName"),
+            render: renderTextCell,
             width: 130,
         },
         {
@@ -72,6 +93,7 @@ const createColumns = ({
             dataIndex: "pushCommand",
             key: "pushCommand",
             onCell: createSelectableCell("pushCommand"),
+            render: renderTextCell,
             width: 130,
         },
         {
@@ -79,6 +101,7 @@ const createColumns = ({
             dataIndex: "commitMessage",
             key: "commitMessage",
             onCell: createSelectableCell("commitMessage"),
+            render: renderTextCell,
             width: 130,
         },
         {
@@ -94,18 +117,21 @@ const createColumns = ({
             dataIndex: "ticketLink",
             key: "ticketLink",
             onCell: createSelectableCell("ticketLink"),
+            render: renderTextCell,
         },
         {
             title: "Git",
             dataIndex: "gitLink",
             key: "gitLink",
             onCell: createSelectableCell("gitLink"),
+            render: renderTextCell,
         },
         {
             title: "PR",
             dataIndex: "prLink",
             key: "prLink",
             onCell: createSelectableCell("prLink"),
+            render: renderTextCell,
         },
         {
             title: "Game",
@@ -114,6 +140,7 @@ const createColumns = ({
             onCell: createSelectableCell("gameName"),
             filterSearch: true,
             filterMode: "menu",
+            render: renderTextCell,
         },
         {
             title: "Notes",
@@ -122,6 +149,7 @@ const createColumns = ({
             onCell: createSelectableCell("additionalInfo"),
             filterSearch: true,
             filters: [],
+            render: renderTextCell,
         },
         {
             title: "Actions",

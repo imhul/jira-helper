@@ -11,9 +11,10 @@ const FormItem = Form.Item
 const midpoint = Math.ceil(formItems.length / 2)
 const editLeftColumnItems = formItems.slice(0, midpoint)
 const editRightColumnItems = formItems.slice(midpoint)
-const addMidpoint = Math.ceil(addFormItems.length / 2)
-const addLeftColumnItems = addFormItems.slice(0, addMidpoint)
-const addRightColumnItems = addFormItems.slice(addMidpoint)
+const visibleAddFormItems = addFormItems.filter((item) => !item.readonly)
+const addMidpoint = Math.ceil(visibleAddFormItems.length / 2)
+const addLeftColumnItems = visibleAddFormItems.slice(0, addMidpoint)
+const addRightColumnItems = visibleAddFormItems.slice(addMidpoint)
 
 export const EditModal: FC<EditModalProps> = memo(({
     add,

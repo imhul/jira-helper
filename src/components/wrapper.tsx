@@ -16,6 +16,8 @@ import { JiraGrid as Grid } from "./grid"
 import { EditModal } from "./edit-modal"
 import { SatusTag as Tag } from "./tag"
 import Counter from "./counter"
+import QAText from "./qa-text"
+import Search from "./search"
 import Copy from "./copy"
 import {
     SaveOutlined,
@@ -26,7 +28,7 @@ import {
     PlusCircleOutlined,
 } from "@ant-design/icons"
 // types
-import type { FC, Ticket } from "../types"
+import type { CopyProps, FC, Ticket } from "../types"
 // utils + config
 import {
     notify,
@@ -35,6 +37,7 @@ import {
     getErrorText,
     centerAppWindow,
     setDefaultAppSize,
+    sortTicketsByOrder,
 } from "../utils"
 import {
     minute,
@@ -47,12 +50,9 @@ import {
     colorPrimary,
 } from "../config"
 
+
 const { Header, Footer, Content } = Layout
 const { version } = packageJson
-
-const sortTicketsByOrder = (tickets: Ticket[]) => {
-    return [...tickets].sort((left, right) => left.order - right.order)
-}
 
 const Wrapper: FC = () => {
     const [api, contextHolder] = notification.useNotification()
@@ -64,12 +64,23 @@ const Wrapper: FC = () => {
     const [selectedTicket, setSelectedTicket] = useState<Ticket>(
         defaultJson.tickets[0]
     )
-    const [selectedCellText, setSelectedCellText] = useState<string>("")
+    const [selectedCell, setSelectedCell] = useState<CopyProps>({
+        text: "",
+        x: 0,
+        y: 0,
+    })
 
     const getStatusData = () => {
         return status.length
             ? dataStatuses[status]
             : { status: "default", name: "", icon: null }
+    }
+
+    const setEditModalOpen = (value: boolean) => {
+        setModalOpen(value)
+        if (!value) {
+            setAddModalOpen(false)
+        }
     }
 
     const saveData = async (dataToSave = jsonObj) => {
@@ -154,13 +165,6 @@ const Wrapper: FC = () => {
         setModalOpen(true)
     }
 
-    const setEditModalOpen = (value: boolean) => {
-        setModalOpen(value)
-        if (!value) {
-            setAddModalOpen(false)
-        }
-    }
-
     const onEdit = (ticket: Ticket) => {
         setAddModalOpen(false)
         setSelectedTicket(ticket)
@@ -203,6 +207,10 @@ const Wrapper: FC = () => {
         saveData(nextData)
     }
 
+    const updateList = async (result: Ticket[]) => {
+        console.info("updateList result: ", result)
+    }
+
     // initialize app
     useEffect(() => {
         async function init() {
@@ -231,6 +239,9 @@ const Wrapper: FC = () => {
     return (
         <main className="container">
             {contextHolder}
+            {selectedCell.text?.length > 0 && (
+                <Copy text={selectedCell.text} x={selectedCell.x} y={selectedCell.y} />
+            )}
             <EditModal
                 add={add}
                 edit={edit}
@@ -274,15 +285,13 @@ const Wrapper: FC = () => {
                                 Autosave
                             </Checkbox>
                         </Card>
-                    </Flex>
-                    <h1 style={{ margin: 0, color: colorPrimary }}>
+                        <h1 style={{ margin: 0, color: colorPrimary }}>
                         Jira Helper{" "}
                         <small style={{ fontSize: "0.5em" }}>v{version}</small>
                     </h1>
+                    </Flex>
+                    <Search updateList={updateList} />
                     <Flex gap="middle" justify="flex-end" align="center">
-                        {selectedCellText.length > 0 && (
-                            <Copy text={selectedCellText} />
-                        )}
                         <Button
                             size="large"
                             type="primary"
@@ -313,7 +322,7 @@ const Wrapper: FC = () => {
                             onEdit={onEdit}
                             onDelete={onDelete}
                             onToggleLock={onToggleLock}
-                            setText={setSelectedCellText}
+                            setSelectedCell={setSelectedCell}
                         />
                     ) : (
                         <Grid
@@ -321,11 +330,12 @@ const Wrapper: FC = () => {
                             data={jsonObj}
                             onEdit={onEdit}
                             onDelete={onDelete}
-                            setText={setSelectedCellText}
+                            setSelectedCell={setSelectedCell}
                         />
                     )}
                 </Content>
                 <Footer style={footerStyle}>
+                    <QAText />
                     <GitCloneCommand />
                 </Footer>
             </Layout>

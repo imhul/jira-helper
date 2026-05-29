@@ -1,5 +1,5 @@
 import { notify } from "./notify"
-import { getDefaultJson, readJson, saveJson } from "./json"
+import { getDefaultJson, readJson, saveJson, sortTicketsByOrder } from "./json"
 import { getFormattedData } from "./text"
 import {
     centerAppWindow,
@@ -17,5 +17,6 @@ export {
     centerAppWindow,
     getFormattedData,
     setDefaultAppSize,
+    sortTicketsByOrder,
     getDeviceScreenSize,
 }

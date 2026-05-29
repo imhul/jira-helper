@@ -1,8 +1,4 @@
-const pushPrefix = "git push -u origin "
-const dash = " - "
-const divider = "-"
-const longDivider = "---"
-const ticketLinkPrefix = "https://playags-interactive.atlassian.net/browse/"
+import { dash, divider, longDivider, pushPrefix, ticketLinkPrefix } from "../config"
 
 export const addIdAsPrefix = (id: string, text: string): string => {
     return `${id}${text}`

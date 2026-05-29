@@ -11,7 +11,7 @@ export const JiraTable: FC<JiraTableProps> = memo(
     ({
         setDirty,
         data = defaultJson,
-        setText,
+        setSelectedCell,
         onEdit,
         onDelete,
         onToggleLock,
@@ -32,6 +32,7 @@ export const JiraTable: FC<JiraTableProps> = memo(
                 }
 
                 setSelectedCellKey(null)
+                setSelectedCell({ text: "", x: 0, y: 0 })
             }
 
             document.addEventListener("click", clearSelectedCell, true)
@@ -56,9 +57,9 @@ export const JiraTable: FC<JiraTableProps> = memo(
             onToggleLock?.(ticket)
         }
 
-        const selectCell = (cellKey: string, text: string) => {
+        const selectCell = (cellKey: string, text: string, x: number, y: number) => {
             setSelectedCellKey(cellKey)
-            setText(text)
+            setSelectedCell({ text, x, y })
         }
 
         const columnsFactory = createColumns({
@@ -72,12 +73,15 @@ export const JiraTable: FC<JiraTableProps> = memo(
         const columns = useMemo(() => columnsFactory, [columnsFactory])
 
         return (
-            <Table<JsonData["tickets"][number]>
-                columns={columns}
-                dataSource={data.tickets}
-                rowKey={(record) => record.ticketId}
-                tableLayout="fixed"
-            />
+            <div className="jira-table-shell">
+                <Table<JsonData["tickets"][number]>
+                    columns={columns}
+                    dataSource={data.tickets}
+                    rowKey={(record) => record.ticketId}
+                    tableLayout="fixed"
+                    scroll={{ y: "calc(100vh - 250px)" }}
+                />
+            </div>
         )
     }
 )

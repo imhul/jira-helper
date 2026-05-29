@@ -1,8 +1,10 @@
 import { memo, useState, useCallback } from "react"
-import { Button, Popover } from "antd"
+import { Flex, Button, Popover } from "antd"
 import { CopyOutlined } from "@ant-design/icons"
+// types
+import type { FC, CopyProps } from "../types"
 
-const Copy = ({ text }: { text: string }) => {
+const Copy: FC<CopyProps> = ({ text, x = 0, y = 0, inTable = true }) => {
     const [open, setOpen] = useState(true)
 
     const onCopy = useCallback(() => {
@@ -14,14 +16,25 @@ const Copy = ({ text }: { text: string }) => {
     }, [open, text])
 
     return (
-        <Popover open={!open} content="Copied!">
-            <Button
-                onClick={onCopy}
-                size="large"
-                type="text"
-                icon={<CopyOutlined />}
-            />
-        </Popover>
+        <Flex style={{
+            position: inTable ? "fixed" : "relative",
+            zIndex: 10,
+            left: inTable ? x - 20 : x,
+            top: inTable ? y - 15 : y,
+        }}>
+            <Popover
+                open={!open}
+                content="Copied!"
+            >
+                <Button
+                    onClick={onCopy}
+                    size="large"
+                    type="primary"
+                    shape="circle"
+                    icon={<CopyOutlined />}
+                />
+            </Popover>
+        </Flex>
     )
 }
 

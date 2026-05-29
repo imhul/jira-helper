@@ -44,7 +44,7 @@ export interface TicketColumnActions {
     onEdit: (ticket: Ticket) => void
     onDelete: (ticket: Ticket) => void
     onToggleLock: (ticket: Ticket) => void
-    onSelectCell: (cellKey: string, text: string) => void
+    onSelectCell: (cellKey: string, text: string, x: number, y: number) => void
     selectedCellKey: string | null
 }
 
@@ -54,7 +54,7 @@ export interface JiraTableProps {
     onEdit?: (ticket: Ticket) => void
     onDelete?: (ticket: Ticket) => void
     onToggleLock?: (ticket: Ticket) => void
-    setText: (text: string) => void
+    setSelectedCell: (cell: CopyProps) => void
 }
 
 export interface JiraGridProps {
@@ -62,7 +62,7 @@ export interface JiraGridProps {
     data: typeof defaultJson
     onEdit?: (ticket: Ticket) => void
     onDelete?: (ticket: Ticket) => void
-    setText: (text: string) => void
+    setSelectedCell: (cell: CopyProps) => void
 }
 
 export interface EditModalProps {
@@ -73,6 +73,13 @@ export interface EditModalProps {
     ticket: Ticket
     order: number
     isAdding: boolean
+}
+
+export interface CopyProps {
+    inTable?: boolean
+    text: string
+    x?: number
+    y?: number
 }
 
 export interface ActionsProps {

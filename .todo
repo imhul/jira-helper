@@ -1,21 +1,22 @@
 # BUGS
 
-[ ] Fix icons in status column
+[x] Fix icons in status column
 [ ] Task ...
 [ ] Task ...
 [ ] Task ...
 
 # FEATURES
 
-[ ] Highlight copy button after showing
-[ ] Hide readonly fields in adding form
+[x] Highlight copy button after showing
+[x] Hide readonly fields in adding form
 [ ] Sorting & filtering
 [ ] One global search box powered by fuse.js
-[ ] Add hover effect to table cells
-[ ] Implement truncation for long text in table cells with tooltip for full text
-[ ] Fix footer, header and table thead positions. Make scrollable body only
-[ ] Sort by default from newest to oldest
-[ ] Add QA-text generator: "The game has been deployed to TEST env. (v. 2.2.1)"
+[x] Add hover effect to table cells
+[x] Implement truncation for long text in table cells with tooltip for full text
+[x] Fix footer, header and table thead positions. Make scrollable body only
+[x] Sort by default from newest to oldest
+[x] Add QA-text generator: "The game has been deployed to TEST env. (v. 2.2.1)"
+[ ] Add menu with git commands with copy buttons
 [ ] Task ...
 [ ] Task ...
 [ ] Task ...

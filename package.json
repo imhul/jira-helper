@@ -1,7 +1,7 @@
 {
     "name": "jira-helper",
     "private": true,
-    "version": "1.0.2",
+    "version": "1.0.3",
     "type": "module",
     "author": {
         "name": "Tkachuk Zakhar",
@@ -25,6 +25,7 @@
         "@tauri-apps/plugin-opener": "^2",
         "antd": "^6.4.3",
         "antd-style": "^4.1.0",
+        "fuse.js": "^7.3.0",
         "react": "^19.2.6",
         "react-dom": "^19.2.6"
     },
