@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from "react"
+import { memo, useEffect, useState } from "react"
 import packageJson from "../../package.json"
 // components
 import {
@@ -57,6 +57,7 @@ const { version } = packageJson
 const Wrapper: FC = () => {
     const [api, contextHolder] = notification.useNotification()
     const [jsonObj, setJsonObj] = useState(defaultJson)
+    const [searchResults, setSearchResults] = useState<Ticket[]>([])
     const [status, setStatus] = useState("absent")
     const [isList, setIsList] = useState(true)
     const [addModalOpen, setAddModalOpen] = useState(false)
@@ -75,6 +76,17 @@ const Wrapper: FC = () => {
             ? dataStatuses[status]
             : { status: "default", name: "", icon: null }
     }
+
+    const sortedTickets = sortTicketsByOrder(jsonObj.tickets)
+    const matchedTicketIds = new Set(searchResults.map((ticket) => ticket.ticketId))
+    const displayedTickets = searchResults.length
+        ? [
+              ...searchResults,
+              ...sortedTickets.filter(
+                  (ticket) => !matchedTicketIds.has(ticket.ticketId)
+              ),
+          ]
+        : sortedTickets
 
     const setEditModalOpen = (value: boolean) => {
         setModalOpen(value)
@@ -207,8 +219,8 @@ const Wrapper: FC = () => {
         saveData(nextData)
     }
 
-    const updateList = async (result: Ticket[]) => {
-        console.info("updateList result: ", result)
+    const updateList = (result: Ticket[]) => {
+        setSearchResults(result)
     }
 
     // initialize app
@@ -290,7 +302,7 @@ const Wrapper: FC = () => {
                         <small style={{ fontSize: "0.5em" }}>v{version}</small>
                     </h1>
                     </Flex>
-                    <Search updateList={updateList} />
+                    <Search tickets={sortedTickets} updateList={updateList} />
                     <Flex gap="middle" justify="flex-end" align="center">
                         <Button
                             size="large"
@@ -318,7 +330,7 @@ const Wrapper: FC = () => {
                     {isList ? (
                         <Table
                             setDirty={setStatus}
-                            data={jsonObj}
+                            data={{ ...jsonObj, tickets: displayedTickets }}
                             onEdit={onEdit}
                             onDelete={onDelete}
                             onToggleLock={onToggleLock}
@@ -327,7 +339,7 @@ const Wrapper: FC = () => {
                     ) : (
                         <Grid
                             setDirty={setStatus}
-                            data={jsonObj}
+                            data={{ ...jsonObj, tickets: displayedTickets }}
                             onEdit={onEdit}
                             onDelete={onDelete}
                             setSelectedCell={setSelectedCell}

@@ -9,7 +9,13 @@ import {
     CheckCircleTwoTone,
 } from "@ant-design/icons"
 // types
-import type { JsonData, StatusData, TicketStatus, CSSProperties } from "./types"
+import type {
+    Ticket,
+    JsonData,
+    StatusData,
+    TicketStatus,
+    CSSProperties,
+} from "./types"
 
 // enums
 export enum ticketStatuses {
@@ -144,6 +150,19 @@ export const standartRules = {
     required: false,
     message: "This string too short or too long!",
 }
+
+export const searchKeys: (keyof Ticket)[] = [
+    "ticketId",
+    "ticketTitle",
+    "branchName",
+    "pushCommand",
+    "commitMessage",
+    "ticketLink",
+    "gitLink",
+    "prLink",
+    "gameName",
+    "additionalInfo",
+]
 
 export const defaultJson: JsonData = {
     tickets: [

@@ -27,7 +27,10 @@ export const JiraTable: FC<JiraTableProps> = memo(
 
             const clearSelectedCell = (event: globalThis.MouseEvent) => {
                 const target = event.target as HTMLElement | null
-                if (target?.closest("[data-jira-cell-key]")) {
+                if (
+                    target?.closest("[data-jira-cell-key]") ||
+                    target?.closest("[data-copy-button]")
+                ) {
                     return
                 }
 

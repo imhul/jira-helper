@@ -1,3 +1,4 @@
+import { memo } from "react"
 // components
 import { Button, Popconfirm, Flex } from "antd"
 // icons
@@ -55,4 +56,4 @@ const Actions = ({ onEdit, onDelete, onToggleLock, record }: ActionsProps) => {
     )
 }
 
-export default Actions
+export default memo(Actions)

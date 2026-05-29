@@ -1,5 +1,7 @@
+// components
 import { Tooltip } from "antd"
 // types
+import type { ReactNode } from "react"
 import type {
     TicketStatus,
     CreatedColumns,
@@ -9,9 +11,9 @@ import type {
 import { ticketStatusIcons } from "../../config"
 import Actions from "./actions"
 
-const renderTextCell = (value: unknown) => {
+const renderTextCell = (value: string | number | null | undefined): ReactNode => {
     if (typeof value !== "string" && typeof value !== "number") {
-        return value
+        return null
     }
 
     const text = String(value)
@@ -67,7 +69,6 @@ const createColumns = ({
             dataIndex: "ticketId",
             key: "ticketId",
             onCell: createSelectableCell("ticketId"),
-            filterSearch: true,
             render: renderTextCell,
             width: 130,
         },
@@ -76,7 +77,6 @@ const createColumns = ({
             dataIndex: "ticketTitle",
             key: "ticketTitle",
             onCell: createSelectableCell("ticketTitle"),
-            filterSearch: true,
             render: renderTextCell,
             width: 130,
         },
@@ -138,8 +138,6 @@ const createColumns = ({
             dataIndex: "gameName",
             key: "gameName",
             onCell: createSelectableCell("gameName"),
-            filterSearch: true,
-            filterMode: "menu",
             render: renderTextCell,
         },
         {
@@ -147,8 +145,6 @@ const createColumns = ({
             dataIndex: "additionalInfo",
             key: "additionalInfo",
             onCell: createSelectableCell("additionalInfo"),
-            filterSearch: true,
-            filters: [],
             render: renderTextCell,
         },
         {

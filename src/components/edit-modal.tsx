@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react"
+import { memo, useEffect, useMemo } from "react"
 // components
 import { Modal, Flex, Form, Input, Select } from "antd"
 // types
@@ -29,9 +29,13 @@ export const EditModal: FC<EditModalProps> = memo(({
     const modalColumns = isAdding
         ? [addLeftColumnItems, addRightColumnItems]
         : [editLeftColumnItems, editRightColumnItems]
-    const initialFormValues = isAdding
-        ? { ...getDefaultJson(order).tickets[0] }
-        : { ...ticket }
+    const initialFormValues = useMemo(
+        () =>
+            isAdding
+                ? { ...getDefaultJson(order).tickets[0] }
+                : { ...ticket },
+        [isAdding, order, ticket]
+    )
     const formKey = isAdding ? `add-${order}` : `edit-${ticket.ticketId}`
 
     const hydrateForm = () => {
@@ -45,7 +49,7 @@ export const EditModal: FC<EditModalProps> = memo(({
         }
 
         hydrateForm()
-    }, [form, initialFormValues, isModalOpen])
+    }, [initialFormValues, isModalOpen])
 
     const syncFormattedFields = async () => {
         const requiredFieldNames = (isAdding ? addFormItems : formItems)

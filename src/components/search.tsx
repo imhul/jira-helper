@@ -1,35 +1,50 @@
-import { useState, useEffect } from "react";
+import { memo, useEffect, useState } from "react"
 // components
-import { Input } from 'antd';
+import { Input } from "antd"
 // types
 import type { FC, Ticket } from "../types"
 // utils + config
-import Fuse from 'fuse.js'
+import Fuse from "fuse.js"
+import { searchKeys as keys } from "../config"
 
 const SearchInput = Input.Search
 
 interface SearchProps {
+    tickets: Ticket[]
     updateList: (result: Ticket[]) => void
 }
 
-// TODO: updateList must resort tickets list:
-// first tickets - its search results, then - the rest of tickets sorted by order
-
-const Search: FC<SearchProps> = ({ updateList }) => {
+const Search: FC<SearchProps> = ({ tickets, updateList }) => {
     const [request, setRequest] = useState("")
     const [isLoading, setIsLoading] = useState(false)
 
     const search = (text: string) => {
-        console.info("Searching for: ", text)
         setRequest(text)
+    }
+
+    useEffect(() => {
+        const normalizedRequest = request.trim()
+
+        if (normalizedRequest.length < 3) {
+            setIsLoading(false)
+            updateList([])
+            return
+        }
+
         setIsLoading(true)
 
-        const result = [] as Ticket[]
+        const fuse = new Fuse(tickets, {
+            includeScore: true,
+            threshold: 0.35,
+            ignoreLocation: true,
+            keys,
+        })
 
-        if (result.length === 0) {
-            updateList(result)
-        }
-    }
+        const result = fuse.search(normalizedRequest).map(({ item }) => item)
+
+        updateList(result)
+        setIsLoading(false)
+    }, [request, tickets, updateList])
 
     return (
         <SearchInput
@@ -41,11 +56,10 @@ const Search: FC<SearchProps> = ({ updateList }) => {
             onSearch={search}
             onChange={(e) => {
                 const value = e.target.value
-                if (value.length < 3 && value.length > 0) return
                 search(value)
             }}
         />
     )
 }
 
-export default Search
+export default memo(Search)

@@ -16,17 +16,23 @@ const Copy: FC<CopyProps> = ({ text, x = 0, y = 0, inTable = true }) => {
     }, [open, text])
 
     return (
-        <Flex style={{
-            position: inTable ? "fixed" : "relative",
-            zIndex: 10,
-            left: inTable ? x - 20 : x,
-            top: inTable ? y - 15 : y,
-        }}>
+        <Flex
+            data-copy-button
+            style={{
+                position: inTable ? "fixed" : "relative",
+                zIndex: 10,
+                left: inTable ? x - 20 : x,
+                top: inTable ? y - 15 : y,
+            }}
+        >
             <Popover
                 open={!open}
                 content="Copied!"
+                placement="top"
+                arrow={{ pointAtCenter: true }}
             >
                 <Button
+                    data-copy-button
                     onClick={onCopy}
                     size="large"
                     type="primary"
