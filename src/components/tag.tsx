@@ -1,3 +1,4 @@
+import { memo } from "react"
 // components
 import { Tag } from "antd"
 // types
@@ -5,7 +6,7 @@ import type { TagProps, SatusTagProps } from "../types"
 // utils + config
 import { colorPrimary, colorDanger } from "../config"
 
-export const SatusTag = ({ data, lastTimeSaved }: SatusTagProps) => {
+export const SatusTag = memo(({ data, lastTimeSaved }: SatusTagProps) => {
     const { status, name, icon } = data
     console.info(data)
 
@@ -28,4 +29,4 @@ export const SatusTag = ({ data, lastTimeSaved }: SatusTagProps) => {
             {text}
         </Tag>
     )
-}
+})

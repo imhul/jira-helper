@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { memo, useEffect } from "react"
 // components
 import { Modal, Flex, Form, Input, Select } from "antd"
 // types
@@ -15,7 +15,7 @@ const addMidpoint = Math.ceil(addFormItems.length / 2)
 const addLeftColumnItems = addFormItems.slice(0, addMidpoint)
 const addRightColumnItems = addFormItems.slice(addMidpoint)
 
-export const EditModal: FC<EditModalProps> = ({
+export const EditModal: FC<EditModalProps> = memo(({
     add,
     edit,
     order,
@@ -180,4 +180,4 @@ export const EditModal: FC<EditModalProps> = ({
             </Flex>
         </Modal>
     )
-}
+})

@@ -5,6 +5,14 @@ export type DeviceScreenSize = {
     height: number
 }
 
+function getAppWindow() {
+    try {
+        return getCurrentWindow()
+    } catch {
+        return null
+    }
+}
+
 export function getDeviceScreenSize(): DeviceScreenSize {
     if (typeof window === "undefined" || typeof window.screen === "undefined") {
         throw new Error(
@@ -27,9 +35,14 @@ export function getDeviceHeight(): number {
 }
 
 export async function setDefaultAppSize(): Promise<void> {
+    const appWindow = getAppWindow()
+    if (!appWindow) {
+        return
+    }
+
     const { width, height } = getDeviceScreenSize()
 
-    await getCurrentWindow().setSize(
+    await appWindow.setSize(
         new LogicalSize(
             Math.floor((width / 100) * 80),
             Math.floor((height / 100) * 80)
@@ -38,5 +51,10 @@ export async function setDefaultAppSize(): Promise<void> {
 }
 
 export async function centerAppWindow(): Promise<void> {
-    await getCurrentWindow().center()
+    const appWindow = getAppWindow()
+    if (!appWindow) {
+        return
+    }
+
+    await appWindow.center()
 }

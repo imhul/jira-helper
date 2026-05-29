@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react"
+import { memo, useState, useCallback } from "react"
 import { Button, Popover } from "antd"
 import { CopyOutlined } from "@ant-design/icons"
 
@@ -25,4 +25,4 @@ const Copy = ({ text }: { text: string }) => {
     )
 }
 
-export default Copy
+export default memo(Copy)

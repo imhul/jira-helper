@@ -50,6 +50,10 @@ import {
 const { Header, Footer, Content } = Layout
 const { version } = packageJson
 
+const sortTicketsByOrder = (tickets: Ticket[]) => {
+    return [...tickets].sort((left, right) => left.order - right.order)
+}
+
 const Wrapper: FC = () => {
     const [api, contextHolder] = notification.useNotification()
     const [jsonObj, setJsonObj] = useState(defaultJson)
@@ -94,10 +98,12 @@ const Wrapper: FC = () => {
         setStatus("reading")
         try {
             const savedJson = await readJson<typeof defaultJson>()
+            const sortedTickets = sortTicketsByOrder(savedJson.tickets)
+
             setJsonObj({
                 ...savedJson,
                 autosave: savedJson.autosave ?? false,
-                tickets: savedJson.tickets.map((ticket) => ({
+                tickets: sortedTickets.map((ticket) => ({
                     ...ticket,
                     locked: ticket.locked ?? false,
                 })),

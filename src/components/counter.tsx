@@ -1,3 +1,4 @@
+import { memo } from "react"
 // components
 import { Tag } from "antd"
 // types
@@ -21,4 +22,4 @@ const Counter = ({ num }: { num: number }) => {
     )
 }
 
-export default Counter
+export default memo(Counter)

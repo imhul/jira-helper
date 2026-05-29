@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react"
+import { memo, useMemo, useEffect, useState } from "react"
 // types
 import type { FC, Ticket, JsonData, JiraTableProps } from "../../types"
 // components
@@ -61,13 +61,15 @@ export const JiraTable: FC<JiraTableProps> = memo(
             setText(text)
         }
 
-        const columns = createColumns({
+        const columnsFactory = createColumns({
             onEdit: editTicket,
             onDelete: deleteTicket,
             onToggleLock: toggleLockTicket,
             onSelectCell: selectCell,
             selectedCellKey,
         })
+
+        const columns = useMemo(() => columnsFactory, [columnsFactory])
 
         return (
             <Table<JsonData["tickets"][number]>

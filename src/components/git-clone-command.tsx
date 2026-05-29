@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { memo, useState } from "react"
 // types
 import { FC } from "../types"
 // components
@@ -34,4 +34,4 @@ const GitCloneCommand: FC = () => {
     )
 }
 
-export default GitCloneCommand
+export default memo(GitCloneCommand)
