@@ -4,6 +4,7 @@ import { getFormattedData } from "./text"
 import {
     centerAppWindow,
     getDeviceScreenSize,
+    setAppWindowTitle,
     setDefaultAppSize,
 } from "./screen-size"
 import { getErrorText } from "./error"
@@ -19,4 +20,5 @@ export {
     setDefaultAppSize,
     sortTicketsByOrder,
     getDeviceScreenSize,
+    setAppWindowTitle,
 }

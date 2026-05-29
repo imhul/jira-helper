@@ -36,6 +36,7 @@ import {
     saveJson,
     getErrorText,
     centerAppWindow,
+    setAppWindowTitle,
     setDefaultAppSize,
     sortTicketsByOrder,
 } from "../utils"
@@ -47,7 +48,6 @@ import {
     defaultJson,
     contentStyle,
     dataStatuses,
-    colorPrimary,
 } from "../config"
 
 
@@ -226,6 +226,7 @@ const Wrapper: FC = () => {
     // initialize app
     useEffect(() => {
         async function init() {
+            await setAppWindowTitle(`Jira Helper v. ${version}`)
             await setDefaultAppSize()
             await centerAppWindow()
             await readData()
@@ -297,10 +298,6 @@ const Wrapper: FC = () => {
                                 Autosave
                             </Checkbox>
                         </Card>
-                        <h1 style={{ margin: 0, color: colorPrimary }}>
-                        Jira Helper{" "}
-                        <small style={{ fontSize: "0.5em" }}>v{version}</small>
-                    </h1>
                     </Flex>
                     <Search tickets={sortedTickets} updateList={updateList} />
                     <Flex gap="middle" justify="flex-end" align="center">

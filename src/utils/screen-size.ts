@@ -58,3 +58,16 @@ export async function centerAppWindow(): Promise<void> {
 
     await appWindow.center()
 }
+
+export async function setAppWindowTitle(title: string): Promise<void> {
+    if (typeof document !== "undefined") {
+        document.title = title
+    }
+
+    const appWindow = getAppWindow()
+    if (!appWindow) {
+        return
+    }
+
+    await appWindow.setTitle(title)
+}
