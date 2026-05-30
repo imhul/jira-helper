@@ -4,8 +4,6 @@ import { CopyOutlined, LinkOutlined } from "@ant-design/icons"
 // types
 import type { FC, CopyProps } from "../types"
 
-const links = ['ticketLink', 'gitLink', 'prLink']
-
 const Copy: FC<CopyProps> = ({ text, x = 0, y = 0, inTable = true, isLink = false }) => {
     const [open, setOpen] = useState(true)
 

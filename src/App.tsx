@@ -1,4 +1,7 @@
 import Wrapper from "./components/wrapper"
+import { FC } from "./types"
 import "./App.css"
 
-export default () => <Wrapper />
+const App: FC = () => <Wrapper />
+
+export default App
