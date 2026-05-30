@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useState } from "react"
 import packageJson from "../../package.json"
 // components
 import {
@@ -78,16 +78,26 @@ const Wrapper: FC = () => {
             : { status: "default", name: "", icon: null }
     }
 
-    const sortedTickets = sortTicketsByOrder(jsonObj.tickets)
-    const matchedTicketIds = new Set(searchResults.map((ticket) => ticket.ticketId))
-    const displayedTickets = searchResults.length
-        ? [
-              ...searchResults,
-              ...sortedTickets.filter(
-                  (ticket) => !matchedTicketIds.has(ticket.ticketId)
-              ),
-          ]
-        : sortedTickets
+    const sortedTickets = useMemo(
+        () => sortTicketsByOrder(jsonObj.tickets),
+        [jsonObj.tickets]
+    )
+    const matchedTicketIds = useMemo(
+        () => new Set(searchResults.map((ticket) => ticket.ticketId)),
+        [searchResults]
+    )
+    const displayedTickets = useMemo(
+        () =>
+            searchResults.length
+                ? [
+                      ...searchResults,
+                      ...sortedTickets.filter(
+                          (ticket) => !matchedTicketIds.has(ticket.ticketId)
+                      ),
+                  ]
+                : sortedTickets,
+        [matchedTicketIds, searchResults, sortedTickets]
+    )
 
     const setEditModalOpen = (value: boolean) => {
         setModalOpen(value)
@@ -220,9 +230,9 @@ const Wrapper: FC = () => {
         saveData(nextData)
     }
 
-    const updateList = (result: Ticket[]) => {
+    const updateList = useCallback((result: Ticket[]) => {
         setSearchResults(result)
-    }
+    }, [])
 
     // initialize app
     useEffect(() => {

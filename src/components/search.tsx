@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react"
+import { memo, useEffect, useEffectEvent, useState } from "react"
 // components
 import { Input } from "antd"
 // types
@@ -17,6 +17,9 @@ interface SearchProps {
 const Search: FC<SearchProps> = ({ tickets, updateList }) => {
     const [request, setRequest] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const emitResults = useEffectEvent((result: Ticket[]) => {
+        updateList(result)
+    })
 
     const search = (text: string) => {
         setRequest(text)
@@ -27,7 +30,7 @@ const Search: FC<SearchProps> = ({ tickets, updateList }) => {
 
         if (normalizedRequest.length < 3) {
             setIsLoading(false)
-            updateList([])
+            emitResults([])
             return
         }
 
@@ -42,9 +45,9 @@ const Search: FC<SearchProps> = ({ tickets, updateList }) => {
 
         const result = fuse.search(normalizedRequest).map(({ item }) => item)
 
-        updateList(result)
+        emitResults(result)
         setIsLoading(false)
-    }, [request, tickets, updateList])
+    }, [request, tickets])
 
     return (
         <SearchInput
