@@ -26,16 +26,17 @@ export const getDefaultJson = (createdAt = Date.now()) => {
 export const normalizeTickets = (tickets: Ticket[]) => {
     return tickets.map((ticket, index) => ({
         ...ticket,
+        order: ticket.order ?? ticket.createdAt ?? index + 1,
         createdAt: ticket.createdAt ?? ticket.order ?? tickets.length - index,
     }))
 }
 
 export const sortTicketsByOrder = (tickets: Ticket[]) => {
     return [...normalizeTickets(tickets)].sort((left, right) => {
-        if (left.createdAt === right.createdAt) {
-            return left.order - right.order
+        if (left.order === right.order) {
+            return right.createdAt - left.createdAt
         }
 
-        return right.createdAt - left.createdAt
+        return left.order - right.order
     })
 }
