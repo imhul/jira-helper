@@ -18,7 +18,7 @@ const Actions = ({ onEdit, onDelete, onToggleLock, record }: ActionsProps) => {
         <Flex gap="small" align="center" justify="center">
             <Button
                 type="text"
-                icon={record.locked ? <UnlockOutlined /> : <LockOutlined />}
+                icon={record.locked ? <LockOutlined /> : <UnlockOutlined />}
                 onClick={() => onToggleLock(record)}
             />
             {!record.locked && (

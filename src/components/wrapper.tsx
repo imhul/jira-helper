@@ -18,6 +18,7 @@ import { SatusTag as Tag } from "./tag"
 import Counter from "./counter"
 import QAText from "./qa-text"
 import Search from "./search"
+import Help from "./help"
 import Copy from "./copy"
 import {
     SaveOutlined,
@@ -350,6 +351,7 @@ const Wrapper: FC = () => {
                 <Footer style={footerStyle}>
                     <QAText />
                     <GitCloneCommand />
+                    <Help />
                 </Footer>
             </Layout>
         </main>
