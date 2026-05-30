@@ -168,6 +168,7 @@ export const defaultJson: JsonData = {
     tickets: [
         {
             order: 1,
+            createdAt: 0,
             ticketId: "Enter ticket ID",
             ticketTitle: "Enter ticket title",
             branchName: "---",

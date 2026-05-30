@@ -32,6 +32,9 @@ const createColumns = ({
     onSelectCell,
     selectedCellKey,
 }: TicketColumnActions): CreatedColumns => {
+    const isLinkColumn = (columnKey: string) =>
+        ["ticketLink", "gitLink", "prLink"].includes(columnKey)
+
     const createSelectableCell =
         (columnKey: string) => (record: Parameters<typeof onEdit>[0]) => ({
             "data-jira-cell-key": `${record.ticketId}:${columnKey}`,
@@ -47,6 +50,7 @@ const createColumns = ({
                         cell.innerText,
                         event.currentTarget.getBoundingClientRect().right,
                         event.currentTarget.getBoundingClientRect().top,
+                        isLinkColumn(columnKey)
                     )
                 }
             },
@@ -61,7 +65,7 @@ const createColumns = ({
             dataIndex: "order",
             key: "order",
             onCell: createSelectableCell("order"),
-            render: renderTextCell,
+            render: (_value, _record, index) => renderTextCell(index + 1),
             width: 40,
         },
         {

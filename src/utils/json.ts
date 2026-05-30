@@ -12,13 +12,30 @@ export async function readJson<T = JsonData>(): Promise<T> {
     return invoke<T>("read_file_json")
 }
 
-export const getDefaultJson = (order: number) => {
+export const getDefaultJson = (createdAt = Date.now()) => {
     return {
         ...defaultJson,
-        tickets: defaultJson.tickets.map((ticket) => ({ ...ticket, order })),
+        tickets: defaultJson.tickets.map((ticket) => ({
+            ...ticket,
+            order: 1,
+            createdAt,
+        })),
     }
 }
 
+export const normalizeTickets = (tickets: Ticket[]) => {
+    return tickets.map((ticket, index) => ({
+        ...ticket,
+        createdAt: ticket.createdAt ?? ticket.order ?? tickets.length - index,
+    }))
+}
+
 export const sortTicketsByOrder = (tickets: Ticket[]) => {
-    return [...tickets].sort((left, right) => left.order - right.order)
+    return [...normalizeTickets(tickets)].sort((left, right) => {
+        if (left.createdAt === right.createdAt) {
+            return left.order - right.order
+        }
+
+        return right.createdAt - left.createdAt
+    })
 }

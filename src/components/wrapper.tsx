@@ -39,6 +39,7 @@ import {
     setAppWindowTitle,
     setDefaultAppSize,
     sortTicketsByOrder,
+    normalizeTickets,
 } from "../utils"
 import {
     minute,
@@ -63,8 +64,7 @@ const Wrapper: FC = () => {
     const [addModalOpen, setAddModalOpen] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedTicket, setSelectedTicket] = useState<Ticket>(
-        defaultJson.tickets[0]
-    )
+        defaultJson.tickets[0])
     const [selectedCell, setSelectedCell] = useState<CopyProps>({
         text: "",
         x: 0,
@@ -126,7 +126,7 @@ const Wrapper: FC = () => {
             setJsonObj({
                 ...savedJson,
                 autosave: savedJson.autosave ?? false,
-                tickets: sortedTickets.map((ticket) => ({
+                tickets: normalizeTickets(sortedTickets).map((ticket) => ({
                     ...ticket,
                     locked: ticket.locked ?? false,
                 })),
@@ -253,12 +253,16 @@ const Wrapper: FC = () => {
         <main className="container">
             {contextHolder}
             {selectedCell.text?.length > 0 && (
-                <Copy text={selectedCell.text} x={selectedCell.x} y={selectedCell.y} />
+                <Copy
+                    isLink={selectedCell.isLink}
+                    text={selectedCell.text}
+                    x={selectedCell.x}
+                    y={selectedCell.y}
+                />
             )}
             <EditModal
                 add={add}
                 edit={edit}
-                order={jsonObj.tickets.length + 1}
                 isModalOpen={modalOpen}
                 setIsModalOpen={setEditModalOpen}
                 ticket={selectedTicket}

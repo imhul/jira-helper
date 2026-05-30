@@ -20,6 +20,7 @@ export interface StatusData {
 
 export interface Ticket {
     order: number
+    createdAt: number
     ticketId: string
     ticketTitle: string
     branchName: string
@@ -44,7 +45,7 @@ export interface TicketColumnActions {
     onEdit: (ticket: Ticket) => void
     onDelete: (ticket: Ticket) => void
     onToggleLock: (ticket: Ticket) => void
-    onSelectCell: (cellKey: string, text: string, x: number, y: number) => void
+    onSelectCell: (cellKey: string, text: string, x: number, y: number, isLink: boolean) => void
     selectedCellKey: string | null
 }
 
@@ -71,12 +72,12 @@ export interface EditModalProps {
     edit: (ticket: Ticket) => void
     add: (ticket: Ticket) => void
     ticket: Ticket
-    order: number
     isAdding: boolean
 }
 
 export interface CopyProps {
     inTable?: boolean
+    isLink?: boolean
     text: string
     x?: number
     y?: number

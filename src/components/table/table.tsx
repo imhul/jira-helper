@@ -21,9 +21,7 @@ export const JiraTable: FC<JiraTableProps> = memo(
         )
 
         useEffect(() => {
-            if (!selectedCellKey) {
-                return
-            }
+            if (!selectedCellKey) return
 
             const clearSelectedCell = (event: globalThis.MouseEvent) => {
                 const target = event.target as HTMLElement | null
@@ -35,7 +33,7 @@ export const JiraTable: FC<JiraTableProps> = memo(
                 }
 
                 setSelectedCellKey(null)
-                setSelectedCell({ text: "", x: 0, y: 0 })
+                setSelectedCell({ isLink: false, text: "", x: 0, y: 0 })
             }
 
             document.addEventListener("click", clearSelectedCell, true)
@@ -60,9 +58,9 @@ export const JiraTable: FC<JiraTableProps> = memo(
             onToggleLock?.(ticket)
         }
 
-        const selectCell = (cellKey: string, text: string, x: number, y: number) => {
+        const selectCell = (cellKey: string, text: string, x: number, y: number, isLink: boolean) => {
             setSelectedCellKey(cellKey)
-            setSelectedCell({ text, x, y })
+            setSelectedCell({ text, x, y, isLink })
         }
 
         const columnsFactory = createColumns({

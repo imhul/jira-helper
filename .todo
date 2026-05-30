@@ -9,14 +9,13 @@
 
 [x] Highlight copy button after showing
 [x] Hide readonly fields in adding form
-[x] Sorting & filtering
 [x] One global search box powered by fuse.js
 [x] Add hover effect to table cells
 [x] Implement truncation for long text in table cells with tooltip for full text
 [x] Fix footer, header and table thead positions. Make scrollable body only
 [x] Sort by default from newest to oldest
 [x] Add QA-text generator: "The game has been deployed to TEST env. (v. 2.2.1)"
-[-] Add menu with git commands with copy buttons
+[ ] Copy component: add link button to each cell with url: ticketLink, gitLink, prLink
 [ ] Task ...
 [ ] Task ...
 [ ] Task ...

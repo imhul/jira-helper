@@ -11,15 +11,13 @@ const FormItem = Form.Item
 const midpoint = Math.ceil(formItems.length / 2)
 const editLeftColumnItems = formItems.slice(0, midpoint)
 const editRightColumnItems = formItems.slice(midpoint)
-const visibleAddFormItems = addFormItems.filter((item) => !item.readonly)
-const addMidpoint = Math.ceil(visibleAddFormItems.length / 2)
-const addLeftColumnItems = visibleAddFormItems.slice(0, addMidpoint)
-const addRightColumnItems = visibleAddFormItems.slice(addMidpoint)
+const addMidpoint = Math.ceil(addFormItems.length / 2)
+const addLeftColumnItems = addFormItems.slice(0, addMidpoint)
+const addRightColumnItems = addFormItems.slice(addMidpoint)
 
 export const EditModal: FC<EditModalProps> = memo(({
     add,
     edit,
-    order,
     ticket,
     isAdding,
     isModalOpen,
@@ -32,11 +30,11 @@ export const EditModal: FC<EditModalProps> = memo(({
     const initialFormValues = useMemo(
         () =>
             isAdding
-                ? { ...getDefaultJson(order).tickets[0] }
+                ? { ...getDefaultJson().tickets[0] }
                 : { ...ticket },
-        [isAdding, order, ticket]
+        [isAdding, ticket]
     )
-    const formKey = isAdding ? `add-${order}` : `edit-${ticket.ticketId}`
+    const formKey = isAdding ? "add-ticket" : `edit-${ticket.ticketId}`
 
     const hydrateForm = () => {
         form.resetFields()
@@ -89,7 +87,7 @@ export const EditModal: FC<EditModalProps> = memo(({
             )
 
             if (isAdding) {
-                add({ ...getDefaultJson(order).tickets[0], ...definedValues })
+                add({ ...getDefaultJson().tickets[0], ...definedValues })
             } else {
                 edit({ ...ticket, ...definedValues })
             }
@@ -106,7 +104,7 @@ export const EditModal: FC<EditModalProps> = memo(({
             key={formKey}
             title={
                 isAdding
-                    ? `Create Ticket #${order}`
+                    ? "Create Ticket"
                     : `Edit Ticket: ${ticket.ticketId}`
             }
             closable={{ "aria-label": "Close" }}
